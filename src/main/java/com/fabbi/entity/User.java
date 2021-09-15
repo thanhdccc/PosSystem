@@ -35,6 +35,9 @@ public class User extends Base {
 	@Column
 	private Date dob;
 	
+	@Column(name = "email")
+	private String email;
+	
 	@Column
 	private String address;
 	

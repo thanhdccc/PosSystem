@@ -34,8 +34,8 @@ public class Supplier extends Base {
 	@Column
 	private String city;
 	
-	@Column
-	private String fax;
+	@Column(name = "email")
+	private String email;
 	
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;

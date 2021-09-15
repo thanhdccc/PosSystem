@@ -1,5 +1,7 @@
 package com.fabbi.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -24,6 +26,9 @@ public class Customer extends Base {
 	
 	@Column(name = "name")
 	private String name;
+	
+	@Column
+	private Date dob;
 	
 	@Column(name = "address")
 	private String address;

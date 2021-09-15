@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "orderdetail")
+@Table(name = "order_detail")
 @Getter
 @Setter
 public class OrderDetail extends Base {

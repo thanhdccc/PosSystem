@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order")
 @Getter
 @Setter
 public class Order extends Base {
@@ -30,9 +30,6 @@ public class Order extends Base {
 	
 	@Column(name = "customerId")
 	private Integer customerId;
-	
-	@Column(name = "user_id")
-	private Integer userId;
 	
 	@OneToMany(mappedBy = "order")
 	private List<OrderDetail> items = new ArrayList<>();
