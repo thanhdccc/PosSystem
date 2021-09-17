@@ -13,6 +13,6 @@ public class MainController {
 
     @GetMapping("/")
     public String getIndexPage() {
-        return "redirect:page/1";
+        return "redirect:users/1";
     }
 }

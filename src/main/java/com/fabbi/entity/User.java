@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
@@ -32,8 +34,12 @@ public class User extends Base {
 	@Column(name = "fullname")
 	private String fullname;
 	
+	@Temporal(TemporalType.DATE)
 	@Column
 	private Date dob;
+	
+	@Column
+	private String gender;
 	
 	@Column(name = "email")
 	private String email;

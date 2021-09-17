@@ -30,6 +30,9 @@ public class Customer extends Base {
 	@Column
 	private Date dob;
 	
+	@Column
+	private String gender;
+	
 	@Column(name = "address")
 	private String address;
 	

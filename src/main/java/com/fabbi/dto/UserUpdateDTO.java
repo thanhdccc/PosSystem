@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -20,35 +19,29 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserUpdateDTO {
 	
 	@Id
 	private Integer id;
-
-	@NotBlank(message = "Username is mandatory")
-	@Size(min = 8, max = 20, message = "Username must be between 8 and 20")
-	private String username;
-
-	@NotBlank(message = "Password is mandatory")
-	@Size(min = 8, max = 20, message = "Password must be between 8 and 20")
-	private String password;
 	
 	@NotBlank(message = "Fullname is mandatory")
 	@Size(min = 6, max = 100, message = "Fullname must be between 6 and 100")
 	private String fullname;
 	
-	@NotNull
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dob;
+	
+	@NotBlank(message = "Gender is mandatory")
+	private String gender;
 	
 	@NotBlank(message = "Address is mandatory")
 	private String address;
 	
-	@Email
+	@Email(message = "Email in not correct format")
 	@NotBlank(message = "Email is mandatory")
 	private String email;
 
-	@Pattern(regexp = "^d{10}$", message = "Phone number is wrong format")
+	@Pattern(regexp = "^\\d{10}$", message = "Phone number is wrong format")
 	@NotBlank(message = "Phone is mandatory")
 	private String phone;
 	
@@ -58,4 +51,6 @@ public class UserDTO {
 	private String isActive;
 	
 	private String role;
+	
+	private String errorField;
 }
