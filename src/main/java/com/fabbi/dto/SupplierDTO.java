@@ -21,7 +21,7 @@ public class SupplierDTO {
 	private Integer id;
 	
 	@NotBlank(message = "Name is mandatory")
-	@Size(min = 6, max = 100, message = "Fullname must be between 6 and 100")
+	@Size(min = 2, max = 100, message = "Fullname must be between 2 and 100")
 	private String name;
 	
 	@Pattern(regexp = "^\\d{10}$", message = "Phone number is wrong format")

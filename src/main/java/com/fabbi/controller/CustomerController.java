@@ -119,12 +119,14 @@ public class CustomerController {
 			Boolean isExistByEmail= customerService.isExistByEmail(customerDTO.getEmail());
 			if (isExistByEmail) {
 				bindingResult.addError(new FieldError("customerDTO", "email", "Email already in use!"));
+				return "add-customer";
 			}
 		}
 		
 		Boolean isExistByPhone = customerService.isExistByPhone(customerDTO.getPhone());
 		if (isExistByPhone) {
 			bindingResult.addError(new FieldError("customerDTO", "phone", "Phone number already in use!"));
+			return "add-customer";
 		}
 		
 		if (bindingResult.hasErrors()) {
@@ -134,7 +136,7 @@ public class CustomerController {
 		Boolean result = customerService.add(customerDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to create User"));
+			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to create Customer"));
 			return "add-customer";
 		}
 		
@@ -155,12 +157,14 @@ public class CustomerController {
 			Boolean isExistByEmailAndIdNot= customerService.isExistByEmailAndIdNot(customerDTO.getEmail(), customerDTO.getId());
 			if (isExistByEmailAndIdNot) {
 				bindingResult.addError(new FieldError("customerDTO", "email", "Email already in use!"));
+				return "edit-customer";
 			}
 		}
 		
 		Boolean isExistByPhoneAndIdNot = customerService.isExistByPhoneAndIdNot(customerDTO.getPhone(), customerDTO.getId());
 		if (isExistByPhoneAndIdNot) {
 			bindingResult.addError(new FieldError("customerDTO", "phone", "Phone number already in use!"));
+			return "edit-customer";
 		}
 		
 		if (bindingResult.hasErrors()) {
@@ -170,7 +174,7 @@ public class CustomerController {
 		Boolean result = customerService.update(customerDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to update User"));
+			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to update Customer"));
 			return "edit-customer";
 		}
 		

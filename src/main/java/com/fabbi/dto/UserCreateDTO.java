@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -39,8 +40,8 @@ public class UserCreateDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dob;
 	
-	@NotBlank(message = "Gender is mandatory")
-	private String gender;
+	@NotNull(message = "Gender is mandatory")
+	private Integer gender;
 	
 	@NotBlank(message = "Address is mandatory")
 	private String address;
@@ -53,10 +54,10 @@ public class UserCreateDTO {
 	@NotBlank(message = "Phone is mandatory")
 	private String phone;
 	
-	@NotBlank(message = "Type is mandatory")
-	private String type;
+	@NotNull(message = "Type is mandatory")
+	private Integer type;
 	
-	private String isActive;
+	private Boolean isActive;
 	
 	private String role;
 	

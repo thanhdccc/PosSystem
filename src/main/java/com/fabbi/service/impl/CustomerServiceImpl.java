@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fabbi.constant.Constant;
 import com.fabbi.dto.CustomerDTO;
 import com.fabbi.entity.Customer;
 import com.fabbi.repository.CustomerRepository;
@@ -31,7 +32,8 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		Customer customerEntity = ObjectMapperUtils.map(customer, Customer.class);
 		
-		customerEntity.setType("N");
+		customerEntity.setType(Constant.CUSTOMER_TYPE_NEW);
+		customerEntity.setIsDeleted(false);
 		
 		try {
 			customerRepository.save(customerEntity);
@@ -57,6 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		Customer newCustomer = ObjectMapperUtils.map(customer, Customer.class);
 		newCustomer.setId(oldCustomer.getId());
+		newCustomer.setIsDeleted(oldCustomer.getIsDeleted());
 		
 		try {
 			customerRepository.save(newCustomer);
@@ -79,13 +82,8 @@ public class CustomerServiceImpl implements CustomerService {
 			log.error("Customer with id: [" + id + "] not exist");
 			return null;
 		}
-		
-		String type = customer.getType().equals("N") ? "New" : customer.getType().equals("V") ? "Vip" : "Deleted";
-		String gender = customer.getGender().equals("M") ? "Male" : "Female";
 
 		CustomerDTO customerDTO = ObjectMapperUtils.map(customer, CustomerDTO.class);
-		customerDTO.setType(type);
-		customerDTO.setGender(gender);
 		
 		log.info("######## End get Customer by ID ########");
 		return customerDTO;
@@ -101,11 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
 		List<CustomerDTO> customerDTOList = new ArrayList<>();
 		
 		for (Customer item : customerList) {
-			String type = item.getType().equals("N") ? "New" : item.getType().equals("V") ? "Vip" : "Deleted";
-			String gender = item.getGender().equals("M") ? "Male" : "Female";
 			CustomerDTO itemDTO = ObjectMapperUtils.map(item, CustomerDTO.class);
-			itemDTO.setType(type);
-			itemDTO.setGender(gender);
 			customerDTOList.add(itemDTO);
 		}
 		
@@ -124,7 +118,7 @@ public class CustomerServiceImpl implements CustomerService {
 			return false;
 		}
 		
-		customer.setType("D");
+		customer.setIsDeleted(true);
 		
 		try {
 			customerRepository.save(customer);
@@ -147,11 +141,7 @@ public class CustomerServiceImpl implements CustomerService {
 		List<CustomerDTO> customerDTOList = new ArrayList<>();
 		
 		for (Customer item : customerList) {
-			String type = item.getType().equals("N") ? "New" : item.getType().equals("V") ? "Vip" : "Deleted";
-			String gender = item.getGender().equals("M") ? "Male" : "Female";
 			CustomerDTO itemDTO = ObjectMapperUtils.map(item, CustomerDTO.class);
-			itemDTO.setType(type);
-			itemDTO.setGender(gender);
 			customerDTOList.add(itemDTO);
 		}
 		

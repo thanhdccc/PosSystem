@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name = "customer", uniqueConstraints = {@UniqueConstraint(columnNames = "phone")})
 @Getter
 @Setter
-@Where(clause = "")
+@Where(clause = "is_deleted = false")
 public class Customer extends Base {
 
 	/**
@@ -34,7 +34,7 @@ public class Customer extends Base {
 	private Date dob;
 	
 	@Column
-	private String gender;
+	private Integer gender;
 	
 	@Column(name = "address")
 	private String address;
@@ -43,7 +43,10 @@ public class Customer extends Base {
 	private String email;
 	
 	@Column(name = "type")
-	private String type;
+	private Integer type;
+	
+	@Column
+	private Boolean isDeleted;
 	
 	@Column
 	private String note;

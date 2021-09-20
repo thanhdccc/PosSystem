@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -23,7 +24,9 @@ public class CustomerDTO {
 	@Id
 	private Integer id;
 	
-	@Pattern(regexp = "^(?:\\d{10}|)$", message = "Phone number is wrong format")
+	//@Pattern(regexp = "^(?:\\d{10}|)$", message = "Phone number is wrong format")
+	@Pattern(regexp = "^\\d{10}$", message = "Phone number is wrong format")
+	@NotBlank(message = "Phone is mandatory")
 	private String phone;
 	
 	@NotBlank(message = "Name is mandatory")
@@ -33,15 +36,15 @@ public class CustomerDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dob;
 	
-	@NotBlank(message = "Gender is mandatory")
-	private String gender;
+	@NotNull(message = "Gender is mandatory")
+	private Integer gender;
 
 	private String address;
 	
 	@Pattern(regexp = "(^$|^.*@.*\\..*$)", message = "Email in not correct format")
 	private String email;
 
-	private String type;
+	private Integer type;
 	
 	private String note;
 	

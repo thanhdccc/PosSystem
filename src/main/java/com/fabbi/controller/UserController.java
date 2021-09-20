@@ -106,32 +106,34 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/add-user")
-    public String getAddForm(@ModelAttribute UserCreateDTO userDTO, Model model) {
-		model.addAttribute("userDTO", userDTO);
+    public String getAddForm(@ModelAttribute UserCreateDTO userCreateDTO, Model model) {
+		model.addAttribute("userCreateDTO", userCreateDTO);
         return "add-user";
     }
 	
 	@PostMapping("/users/add-user")
-	public String addUser(@Valid UserCreateDTO userDTO, BindingResult bindingResult) {
+	public String addUser(@Valid UserCreateDTO userCreateDTO, BindingResult bindingResult) {
 		
-		Boolean isExistByUsername = staffService.isUserExistByUsername(userDTO.getUsername());
+		Boolean isExistByUsername = staffService.isUserExistByUsername(userCreateDTO.getUsername());
 		if (isExistByUsername) {
-			bindingResult.addError(new FieldError("userDTO", "username", "Username already in use!"));
+			bindingResult.addError(new FieldError("userCreateDTO", "username", "Username already in use!"));
+			return "add-user";
 		}
 		
-		Boolean isExistByEmail = staffService.isUserExistByEmail(userDTO.getEmail());
+		Boolean isExistByEmail = staffService.isUserExistByEmail(userCreateDTO.getEmail());
 		if (isExistByEmail) {
-			bindingResult.addError(new FieldError("userDTO", "email", "Email address already in use!"));
+			bindingResult.addError(new FieldError("userCreateDTO", "email", "Email address already in use!"));
+			return "add-user";
 		}
 		
 		if (bindingResult.hasErrors()) {
 			return "add-user";
 		}
 		
-		Boolean result = staffService.add(userDTO);
+		Boolean result = staffService.add(userCreateDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("userDTO", "errorField", "Error to create User"));
+			bindingResult.addError(new FieldError("userCreateDTO", "errorField", "Error to create User"));
 			return "add-user";
 		}
 		
@@ -140,27 +142,28 @@ public class UserController {
 	
 	@GetMapping("/users/edit-user/{id}")
 	public String getEditForm(@PathVariable Integer id, Model model) {
-		UserCreateDTO userDTO = staffService.getById(id);
-		model.addAttribute("userDTO", userDTO);
+		UserCreateDTO userUpdateDTO = staffService.getById(id);
+		model.addAttribute("userUpdateDTO", userUpdateDTO);
 		return "edit-user";
 	}
 	
 	@PostMapping("/users/edit-user")
-	public String updateUser(@Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
+	public String updateUser(@Valid UserUpdateDTO userUpdateDTO, BindingResult bindingResult) {
 		
-		Boolean isExistByEmail = staffService.isUserExistByEmailAndIdNot(userDTO.getEmail(), userDTO.getId());
+		Boolean isExistByEmail = staffService.isUserExistByEmailAndIdNot(userUpdateDTO.getEmail(), userUpdateDTO.getId());
 		if (isExistByEmail) {
-			bindingResult.addError(new FieldError("userDTO", "email", "Email address already in use!"));
+			bindingResult.addError(new FieldError("userUpdateDTO", "email", "Email address already in use!"));
+			return "edit-user";
 		}
 		
 		if (bindingResult.hasErrors()) {
 			return "edit-user";
 		}
 		
-		Boolean result = staffService.update(userDTO);
+		Boolean result = staffService.update(userUpdateDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("userDTO", "errorField", "Error to create User"));
+			bindingResult.addError(new FieldError("userUpdateDTO", "errorField", "Error to create User"));
 			return "edit-user";
 		}
 		
