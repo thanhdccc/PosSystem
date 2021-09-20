@@ -10,7 +10,7 @@
                                                 ~{:: #home-footer}
                                                )}">
 <head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
-	<title id="pageTitle">Edit User</title>
+	<title id="pageTitle">Edit Customer</title>
 </head>
 <body>
 
@@ -23,9 +23,6 @@
 				<form th:action="@{/customers/edit-customer}" th:object="${customerDTO}" method="POST">
 					<input hidden="true" th:field="*{id}">
 					<div class="form-row py-1">
-						<div th:if="${#fields.hasErrors('errorField')}" th:errors="*{errorField}" class="invalid-feedback"></div>
-					</div>
-					<div class="form-row py-1">
 						<label for="name" class="form-label">Name</label>
 						<input type="text" name="name" class="form-control" th:field="*{name}" id="name"  th:value="*{name}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
@@ -35,14 +32,14 @@
 						<input type="date" pattern="yyyy-MM-dd" name="dob" class="form-control" th:field="*{dob}" id="dob" th:value="*{dob}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="invalid-feedback"></div>
 					</div>
-					<div class="form-row py-1" th:if="${customerDTO.gender == 'M'}">
+					<div class="form-row py-1" th:if="${customerDTO.gender == 'Male'}">
 						<label for="gender" class="form-label">Gender</label>
 						<select class="form-control" th:field="*{gender}">
 							<option selected="selected" th:value="'M'" th:text="Male"></option>
 							<option th:value="'F'" th:text="Female"></option>
 						</select>
 					</div>
-					<div class="form-row py-1" th:if="${customerDTO.gender == 'F'}">
+					<div class="form-row py-1" th:if="${customerDTO.gender == 'Female'}">
 						<label for="gender" class="form-label">Gender</label>
 						<select class="form-control" th:field="*{gender}">
 							<option th:value="'M'" th:text="Male"></option>
@@ -64,7 +61,7 @@
 						<input type="text" name="address" class="form-control" th:field="*{address}" id="address" th:value="*{address}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="invalid-feedback"></div>
 					</div>
-					<div class="form-row py-1" th:if="${customerDTO.type == 'N'}">
+					<div class="form-row py-1" th:if="${customerDTO.type == 'New'}">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
 						    <option selected="selected" th:value="'N'" th:text="New"></option>
@@ -72,7 +69,7 @@
 						    <option th:value="'D'" th:text="Deleted"></option>
 						</select>
 					</div>
-					<div class="form-row py-1" th:if="${customerDTO.type == 'V'}">
+					<div class="form-row py-1" th:if="${customerDTO.type == 'Vip'}">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
 						    <option th:value="'N'" th:text="New"></option>
@@ -80,7 +77,7 @@
 						    <option th:value="'D'" th:text="Deleted"></option>
 						</select>
 					</div>
-					<div class="form-row py-1" th:if="${customerDTO.type == 'D'}">
+					<div class="form-row py-1" th:if="${customerDTO.type == 'Deleted'}">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
 						    <option th:value="'N'" th:text="New"></option>

@@ -7,12 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "supplier")
+@Table(name = "supplier", uniqueConstraints = {@UniqueConstraint(columnNames = {"phone", "email"})})
 @Getter
 @Setter
 public class Supplier extends Base {

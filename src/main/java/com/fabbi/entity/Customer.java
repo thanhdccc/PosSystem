@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Where;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +16,7 @@ import lombok.Setter;
 @Table(name = "customer", uniqueConstraints = {@UniqueConstraint(columnNames = "phone")})
 @Getter
 @Setter
+@Where(clause = "")
 public class Customer extends Base {
 
 	/**

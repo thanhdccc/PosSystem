@@ -164,14 +164,14 @@ public class CustomerController {
 		}
 		
 		if (bindingResult.hasErrors()) {
-			return "add-customer";
+			return "edit-customer";
 		}
 		
 		Boolean result = customerService.update(customerDTO);
 		
 		if (!result) {
 			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to update User"));
-			return "add-customer";
+			return "edit-customer";
 		}
 		
 		return "redirect:/customers/1";

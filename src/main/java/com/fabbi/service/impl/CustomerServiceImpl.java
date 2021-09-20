@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		CustomerDTO customerDTO = ObjectMapperUtils.map(customer, CustomerDTO.class);
 		customerDTO.setType(type);
-		customer.setGender(gender);
+		customerDTO.setGender(gender);
 		
 		log.info("######## End get Customer by ID ########");
 		return customerDTO;
@@ -139,7 +139,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<CustomerDTO> search(String keyword, int pageNo, int pageSize) {
-		log.info("######## Begin search User by keyword: [" + keyword + "] ########");
+		log.info("######## Begin search Customer by keyword: [" + keyword + "] ########");
 		
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 		
@@ -155,7 +155,7 @@ public class CustomerServiceImpl implements CustomerService {
 			customerDTOList.add(itemDTO);
 		}
 		
-		log.info("######## End search User by keyword: [" + keyword + "] ########");
+		log.info("######## End search Customer by keyword: [" + keyword + "] ########");
 		return customerDTOList;
 	}
 

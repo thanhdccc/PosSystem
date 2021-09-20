@@ -21,9 +21,6 @@
 			<div class="col col-md-5 text-center">
 				<form th:action="@{/users/add-user}" th:object="${userDTO}" method="POST">
 					<div class="form-row py-1">
-						<div th:if="${#fields.hasErrors('errorField')}" th:errors="*{errorField}" class="invalid-feedback"></div>
-					</div>
-					<div class="form-row py-1">
 						<label for="username" class="form-label">Username</label>
 						<input type="text" name="username" class="form-control" id="username" th:value="*{username}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="invalid-feedback"></div>

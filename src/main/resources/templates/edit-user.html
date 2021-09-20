@@ -23,9 +23,6 @@
 				<form th:action="@{/users/edit-user}" th:object="${userDTO}" method="POST">
 					<input hidden="true" th:field="*{id}">
 					<div class="form-row py-1">
-						<div th:if="${#fields.hasErrors('errorField')}" th:errors="*{errorField}" class="invalid-feedback"></div>
-					</div>
-					<div class="form-row py-1">
 						<label for="fullname" class="form-label">Fullname</label>
 						<input type="text" name="fullname" class="form-control" th:field="*{fullname}" id="fullname"  th:value="*{fullname}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class="invalid-feedback"></div>

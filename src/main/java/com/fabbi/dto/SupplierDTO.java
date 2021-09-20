@@ -1,13 +1,10 @@
 package com.fabbi.dto;
 
-import java.util.Date;
-
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,30 +15,30 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerDTO {
+public class SupplierDTO {
 
 	@Id
 	private Integer id;
-	
-	@Pattern(regexp = "^(?:\\d{10}|)$", message = "Phone number is wrong format")
-	private String phone;
 	
 	@NotBlank(message = "Name is mandatory")
 	@Size(min = 6, max = 100, message = "Fullname must be between 6 and 100")
 	private String name;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date dob;
+	@Pattern(regexp = "^\\d{10}$", message = "Phone number is wrong format")
+	@NotBlank(message = "Phone is mandatory")
+	private String phone;
 	
-	@NotBlank(message = "Gender is mandatory")
-	private String gender;
-
+	@NotBlank(message = "Address is mandatory")
 	private String address;
+
+	@NotBlank(message = "City is mandatory")
+	private String city;
 	
-	@Pattern(regexp = "(^$|^.*@.*\\..*$)", message = "Email in not correct format")
+	@Email(message = "Email in not correct format")
+	@NotBlank(message = "Email is mandatory")
 	private String email;
 
-	private String type;
+	private String description;
 	
 	private String note;
 	
