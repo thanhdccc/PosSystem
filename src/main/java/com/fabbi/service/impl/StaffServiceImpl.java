@@ -102,7 +102,6 @@ public class StaffServiceImpl implements StaffService {
 		}
 		
 		UserCreateDTO userDTO = ObjectMapperUtils.map(userEntity, UserCreateDTO.class);
-		userDTO.setIsActive(userEntity.getIsActive() == true ? "Active" : "Inactive");
 		userDTO.setRole(userEntity.getRole().getName());
 		
 		log.info("######## End get User by ID ########");
@@ -121,9 +120,6 @@ public class StaffServiceImpl implements StaffService {
 		for (User user : userList) {
 			UserCreateDTO userDTO = ObjectMapperUtils.map(user, UserCreateDTO.class);
 			userDTO.setRole(user.getRole().getName());
-			userDTO.setIsActive(user.getIsActive() == true ? "Active" : "Inactive");
-			userDTO.setGender(user.getGender().equals("M") ? "Male" : "Female");
-			userDTO.setType(user.getType().equals("M") ? "Manager" : "Saler");
 			userDTOList.add(userDTO);
 		}
 		
@@ -167,9 +163,6 @@ public class StaffServiceImpl implements StaffService {
 		for (User user : userList) {
 			UserCreateDTO userDTO = ObjectMapperUtils.map(user, UserCreateDTO.class);
 			userDTO.setRole(user.getRole().getName());
-			userDTO.setIsActive(user.getIsActive() == true ? "Active" : "Inactive");
-			userDTO.setGender(user.getGender().equals("M") ? "Male" : "Female");
-			userDTO.setType(user.getType().equals("M") ? "Manager" : "Saler");
 			userDTOList.add(userDTO);
 		}
 		
