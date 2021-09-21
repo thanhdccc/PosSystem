@@ -25,17 +25,17 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     
     List<Customer> findAllBy(Pageable pageable);
     
-    @Query(value = "SELECT * FROM customer c WHERE c.phone LIKE %:keyword%"
+    @Query("SELECT c FROM Customer c WHERE c.phone LIKE %:keyword%"
     		+ " OR c.name LIKE %:keyword%"
     		+ " OR c.type LIKE %:keyword%"
     		+ " OR c.address LIKE %:keyword%"
-    		+ " OR c.email LIKE %:keyword%", nativeQuery = true)
+    		+ " OR c.email LIKE %:keyword%")
     List<Customer> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
     
-    @Query(value = "SELECT COUNT(*) FROM customer c WHERE c.phone LIKE %:keyword%"
+    @Query("SELECT COUNT(c.id) FROM Customer c WHERE c.phone LIKE %:keyword%"
     		+ " OR c.name LIKE %:keyword%"
     		+ " OR c.type LIKE %:keyword%"
     		+ " OR c.address LIKE %:keyword%"
-    		+ " OR c.email LIKE %:keyword%", nativeQuery = true)
+    		+ " OR c.email LIKE %:keyword%")
     Integer countByKeyword(@Param("keyword") String keyword);
 }

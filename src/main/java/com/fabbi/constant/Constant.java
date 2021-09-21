@@ -1,7 +1,7 @@
 package com.fabbi.constant;
 
 public final class Constant {
-	public static final int PAGE_SIZE = 3;
+	public static final int PAGE_SIZE = 1;
 	
 	public static final int CUSTOMER_TYPE_NEW = 1;
 	public static final int CUSTOMER_TYPE_CLOSE = 2;

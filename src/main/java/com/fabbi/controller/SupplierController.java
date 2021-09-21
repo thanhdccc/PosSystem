@@ -175,4 +175,15 @@ public class SupplierController {
 		
 		return "redirect:/suppliers/1";
 	}
+	
+	@GetMapping("/suppliers/delete-supplier/{id}")
+	public String deleteSupplier(@PathVariable Integer id) {
+		Boolean result = supplierService.delete(id);
+		
+		if (!result) {
+			
+		}
+		
+		return "redirect:/suppliers/1";
+	}
 }

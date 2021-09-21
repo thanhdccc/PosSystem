@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.fabbi.constant.Constant;
 import com.fabbi.dto.UserCreateDTO;
 import com.fabbi.dto.UserUpdateDTO;
 import com.fabbi.service.StaffService;
@@ -36,7 +37,7 @@ public class UserController {
 	
 	@GetMapping("/users/{pageNo}")
 	public String index(@PathVariable(value = "pageNo") int pageNo, Model model) {
-		int pageSize = 3;
+		int pageSize = Constant.PAGE_SIZE;
 		int tmp = staffService.count();
 		int totalPage = 0;
 		List<UserCreateDTO> userList = staffService.findPaginated(pageNo, pageSize);
@@ -61,8 +62,7 @@ public class UserController {
 	
 	@GetMapping("/users/search/{pageNo}")
 	public String search(@PathVariable(value = "pageNo") int pageNo, @Param("keyword") String keyword, Model model) {
-		
-		int pageSize = 3;
+		int pageSize = Constant.PAGE_SIZE;
 		int tmp = 0;
 		int totalPage = 0;
 		List<UserCreateDTO> userList;
