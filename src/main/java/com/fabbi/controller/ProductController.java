@@ -21,6 +21,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -95,14 +96,14 @@ public class ProductController {
 		String raw = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		String filePrefix = raw.substring(raw.indexOf("."));
 		
-		String filename = name + "_" + supplierId + "_" + categoryId + filePrefix;
+		String filename = name + "_" + categoryId + filePrefix;
 		
 		productDTO.setThumbnail(filename);
 		
 		Boolean result = productService.add(productDTO);
 		
 		if (result) {
-			Path uploadPath = Paths.get(Constant.UPLOAD_DIR);
+			Path uploadPath = Paths.get(Constant.UPLOAD_DIR + "/supplier-" + supplierId);
 			
 			if (!Files.exists(uploadPath)) {
 				Files.createDirectories(uploadPath);
@@ -121,5 +122,31 @@ public class ProductController {
 		redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		
 		return "redirect:/products/1";
+	}
+	
+	@GetMapping("/products/{pageNo}")
+	public String index(@PathVariable(value = "pageNo") int pageNo, Model model) {
+		int pageSize = Constant.PAGE_SIZE;
+		int tmp = productService.count();
+		int totalPage = 0;
+		
+		List<ProductDTO> productList = productService.findPaginated(pageNo, pageSize);
+		
+		if (tmp < pageSize) {
+			totalPage = 1;
+		} else {
+			if (tmp % pageSize == 0) {
+				totalPage = tmp / pageSize;
+			} else {
+				totalPage = (tmp / pageSize) + 1;
+			}
+		}
+		
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", totalPage);
+		model.addAttribute("totalItems", productList.size());
+		model.addAttribute("productList", productList);
+		
+		return "list-product";
 	}
 }

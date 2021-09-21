@@ -29,7 +29,7 @@ public class Product extends Base {
 	private Integer quantity;
 	
 	@Column
-	private Float price;
+	private Integer price;
 	
 	@Column
 	private String thumbnail;

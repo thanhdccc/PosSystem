@@ -1,5 +1,8 @@
 package com.fabbi.repository;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Integer countByCategoryId(Integer id);
 	
 	Integer countBySupplierId(Integer id);
+	
+	List<Product> findAllBy(Pageable pageable);
 }
