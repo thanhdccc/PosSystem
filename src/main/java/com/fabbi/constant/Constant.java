@@ -11,4 +11,12 @@ public final class Constant {
 	
 	public static final int GENDER_MALE = 0;
 	public static final int GENDER_FEMALE = 1;
+	
+	public static final int UNIT_KILOGRAM = 0;
+	public static final int UNIT_PIECE = 1;
+	
+	public static final int STATUS_SUCCESS = 0;
+	public static final int STATUS_FAIL = 1;
+	
+	public static final String UPLOAD_DIR = "./product-images";
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabbi.constant.Constant;
 import com.fabbi.dto.UserCreateDTO;
@@ -112,7 +113,9 @@ public class UserController {
     }
 	
 	@PostMapping("/users/add-user")
-	public String addUser(@Valid UserCreateDTO userCreateDTO, BindingResult bindingResult) {
+	public String addUser(@Valid UserCreateDTO userCreateDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 		
 		Boolean isExistByUsername = staffService.isUserExistByUsername(userCreateDTO.getUsername());
 		if (isExistByUsername) {
@@ -133,9 +136,10 @@ public class UserController {
 		Boolean result = staffService.add(userCreateDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("userCreateDTO", "errorField", "Error to create User"));
-			return "add-user";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to save.");
 		}
+		
+		redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		
 		return "redirect:/users/1";
 	}
@@ -148,7 +152,9 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/edit-user")
-	public String updateUser(@Valid UserUpdateDTO userUpdateDTO, BindingResult bindingResult) {
+	public String updateUser(@Valid UserUpdateDTO userUpdateDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 		
 		Boolean isExistByEmail = staffService.isUserExistByEmailAndIdNot(userUpdateDTO.getEmail(), userUpdateDTO.getId());
 		if (isExistByEmail) {
@@ -163,21 +169,24 @@ public class UserController {
 		Boolean result = staffService.update(userUpdateDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("userUpdateDTO", "errorField", "Error to create User"));
-			return "edit-user";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to update.");
 		}
+		
+		redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
 		
 		return "redirect:/users/1";
 	}
 	
 	@GetMapping("/users/delete-user/{id}")
-	public String deleteUser(@PathVariable Integer id) {
+	public String deleteUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 		
 		Boolean result = staffService.delete(id);
 		
 		if (!result) {
-			
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to delete.");
 		}
+		
+		redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
 		
 		return "redirect:/users/1";
 	}

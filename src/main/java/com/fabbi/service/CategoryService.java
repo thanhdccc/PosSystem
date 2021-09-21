@@ -18,6 +18,8 @@ public interface CategoryService {
 	
 	List<CategoryDTO> search(String name, int pageNo, int pageSize);
 	
+	List<CategoryDTO> findAll();
+	
 	Boolean isExistByName(String name);
 	
 	Boolean isExistByNameAndIdNot(String name, Integer id);

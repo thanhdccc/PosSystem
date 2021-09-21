@@ -173,4 +173,10 @@ public class CategoryServiceImpl implements CategoryService {
 	public Integer countByName(String name) {
 		return categoryRepository.countByName(name);
 	}
+
+	@Override
+	public List<CategoryDTO> findAll() {
+		List<Category> categoryList = categoryRepository.findAll();
+		return ObjectMapperUtils.mapAll(categoryList, CategoryDTO.class);
+	}
 }

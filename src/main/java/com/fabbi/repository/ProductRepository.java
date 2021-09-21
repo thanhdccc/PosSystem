@@ -11,6 +11,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Boolean existsBySupplierId(Integer id);
 	
 	Boolean existsByCategoryId(Integer id);
+	
+	Boolean existsByNameAndSupplierId(String name, Integer id);
+	
+	Boolean existsByNameAndCategoryId(String name, Integer id);
 
 	Integer countByCategoryId(Integer id);
 	

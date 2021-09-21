@@ -35,7 +35,7 @@ public class Product extends Base {
 	private String thumbnail;
 	
 	@Column
-	private String unit;
+	private Integer unit;
 	
 	@Column(columnDefinition = "TEXT")
 	private String description;
