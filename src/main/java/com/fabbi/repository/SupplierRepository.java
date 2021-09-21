@@ -25,17 +25,17 @@ public interface SupplierRepository extends JpaRepository<Supplier, Integer> {
     
     List<Supplier> findAllBy(Pageable pageable);
     
-    @Query(value = "SELECT * FROM supplier s WHERE s.phone LIKE %:keyword%"
+    @Query("SELECT s FROM Supplier s WHERE s.phone LIKE %:keyword%"
     		+ " OR s.name LIKE %:keyword%"
     		+ " OR s.city LIKE %:keyword%"
     		+ " OR s.address LIKE %:keyword%"
-    		+ " OR s.email LIKE %:keyword%", nativeQuery = true)
+    		+ " OR s.email LIKE %:keyword%")
     List<Supplier> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
     
-    @Query(value = "SELECT COUNT(*) FROM supplier s WHERE s.phone LIKE %:keyword%"
+    @Query("SELECT COUNT(s.id) FROM Supplier s WHERE s.phone LIKE %:keyword%"
     		+ " OR s.name LIKE %:keyword%"
     		+ " OR s.city LIKE %:keyword%"
     		+ " OR s.address LIKE %:keyword%"
-    		+ " OR s.email LIKE %:keyword%", nativeQuery = true)
+    		+ " OR s.email LIKE %:keyword%")
     Integer countByKeyword(@Param("keyword") String keyword);
 }

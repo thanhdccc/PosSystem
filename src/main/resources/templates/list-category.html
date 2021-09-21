@@ -11,7 +11,7 @@
                                                 ~{:: #home-footer}
                                                )}">
 <head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
-	<title id="pageTitle">Supplier</title>
+	<title id="pageTitle">Category</title>
 </head>
 <body>
 	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
@@ -19,9 +19,9 @@
 	<div id="home-main-content">
 	
 	  <div style="width: 400px; float: right;">
-	  	<form th:action="@{/suppliers/search/1}" method="GET">
+	  	<form th:action="@{/categories/search/1}" method="GET">
 		  	<div class="input-group">
-		  		<input id="txtSearch" type="text" name="keyword" class="form-control rounded" 
+		  		<input id="txtSearch" type="text" name="name" class="form-control rounded" 
 		  		placeholder="Search" aria-label="Search" aria-describedby="search-addon">
 		  		<button class="btn btn-outline-primary" type="submit">Search</button>
 		  	</div>
@@ -29,7 +29,7 @@
 	  </div>
 	
 	  <div>
-	    <a href="/suppliers/add-supplier" class="btn btn-success btnCustomTh">Add</a>
+	    <a href="/categories/add-category" class="btn btn-success btnCustomTh">Add</a>
 	  </div>
 	  
 	  <div>&nbsp;</div>
@@ -40,28 +40,20 @@
 	    		<tr>
 	    			<td scope="col">ID</td>
 			        <td scope="col">Name</td>
-			        <td scope="col">Phone</td>
-			        <td scope="col">Address</td>
-			        <td scope="col">City</td>
-			        <td scope="col">Email</td>
+			        <td scope="col">Number of Product</td>
 			        <td scope="col">Description</td>
-			        <td scope="col">Note</td>
 			        <td scope="col" style="text-align: center;">Action</td>
 			    </tr>
 	    	</thead>
 	      	<tbody>
-	      		<tr th:each="supplier : ${supplierList}">
-	      			<th scope="row" th:text="${supplier.id}"></th>
-			        <td th:text="${supplier.name}"></td>
-			        <td th:text="${supplier.phone}"></td>
-			        <td th:text="${supplier.address}"></td>
-			        <td th:text="${supplier.city}"></td>
-			        <td th:text="${supplier.email}"></td>
-			        <td th:text="${supplier.description}"></td>
-			        <td th:text="${supplier.note}"></td>
+	      		<tr th:each="category : ${categoryList}">
+	      			<th scope="row" th:text="${category.id}"></th>
+			        <td th:text="${category.name}"></td>
+			        <td th:text="${category.numberOfProduct}"></td>
+			        <td th:text="${category.description}"></td>
 			        <td style="text-align: center;">
-			          <a th:href="@{/suppliers/edit-supplier/{id}(id=${supplier.id})}" class="btn btn-warning btnCustomTh">Edit</a>
-			          <a th:href="@{/suppliers/delete-supplier/{id}(id=${supplier.id})}" class="btn btn-danger btnCustomTh">Delete</a>
+			          <a th:href="@{/categories/edit-category/{id}(id=${category.id})}" class="btn btn-warning btnCustomTh">Edit</a>
+			          <a th:href="@{/categories/delete-category/{id}(id=${category.id})}" class="btn btn-danger btnCustomTh">Delete</a>
 			        </td>
 			    </tr>
 	      	</tbody>
@@ -70,52 +62,52 @@
 	    
 	    <div>&nbsp;</div>
 
-	    <div th:if="${keyword != null}">
+	    <div th:if="${name != null}">
 	    	<div th:if="${totalPages > 1}">
 		    	<nav>
 		    		<ul class="pagination justify-content-center">
 		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/search/1' + ${'?keyword=' + keyword}}" class="page-link">First</a>
+		    				<a th:href="@{'/categories/search/1' + ${'?name=' + name}}" class="page-link">First</a>
 		    			</li>
 		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/search/' +  ${currentPage - 1} + ${'?keyword=' + keyword}}" class="page-link">Previous</a>
+		    				<a th:href="@{'/categories/search/' +  ${currentPage - 1} + ${'?name=' + name}}" class="page-link">Previous</a>
 		    			</li>
 		    			
 		    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
-		    				<a class="page-link" th:href="@{'/suppliers/search/' + ${i} + ${'?keyword=' + keyword}}">[[${i}]]</a>
+		    				<a class="page-link" th:href="@{'/categories/search/' + ${i} + ${'?name=' + name}}">[[${i}]]</a>
 		    			</li>
 		    			
 		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/search/' + ${currentPage + 1} + ${'?keyword=' + keyword}}" class="page-link">Next</a>
+		    				<a th:href="@{'/categories/search/' + ${currentPage + 1} + ${'?name=' + name}}" class="page-link">Next</a>
 		    			</li>
 		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/search/' + ${totalPages} + ${'?keyword=' + keyword}}" class="page-link">Last</a>
+		    				<a th:href="@{'/categories/search/' + ${totalPages} + ${'?name=' + name}}" class="page-link">Last</a>
 		    			</li>	    			
 		    		</ul>
 		    	</nav>
 		    </div>
 	    </div>
 	    
-	    <div th:unless="${keyword != null}">
+	    <div th:unless="${name != null}">
 	    	<div th:if="${totalPages > 1}">
 		    	<nav>
 		    		<ul class="pagination justify-content-center">
 		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/1'}" class="page-link">First</a>
+		    				<a th:href="@{'/categories/1'}" class="page-link">First</a>
 		    			</li>
 		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/' +  ${currentPage - 1}}" class="page-link">Previous</a>
+		    				<a th:href="@{'/categories/' +  ${currentPage - 1}}" class="page-link">Previous</a>
 		    			</li>
 		    			
 		    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
-		    				<a class="page-link" th:href="@{'/suppliers/' + ${i}}">[[${i}]]</a>
+		    				<a class="page-link" th:href="@{'/categories/' + ${i}}">[[${i}]]</a>
 		    			</li>
 		    			
 		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/' + ${currentPage + 1}}" class="page-link">Next</a>
+		    				<a th:href="@{'/categories/' + ${currentPage + 1}}" class="page-link">Next</a>
 		    			</li>
 		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    				<a th:href="@{'/suppliers/' + ${totalPages}}" class="page-link">Last</a>
+		    				<a th:href="@{'/categories/' + ${totalPages}}" class="page-link">Last</a>
 		    			</li>	    			
 		    		</ul>
 		    	</nav>
