@@ -20,7 +20,7 @@
 	<div id="home-main-content">
 		<div class="row justify-content-center align-items-center h-100">
 			<div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
-				<form th:action="@{/users/edit-user}" th:object="${userDTO}" method="POST">
+				<form th:action="@{/users/edit-user}" th:object="${userUpdateDTO}" method="POST">
 					<input hidden="true" th:field="*{id}">
 					<div class="form-row py-1">
 						<label for="fullname" class="form-label">Fullname</label>
@@ -32,18 +32,18 @@
 						<input type="date" pattern="yyyy-MM-dd" name="dob" class="form-control" th:field="*{dob}" id="dob" th:value="*{dob}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="invalid-feedback"></div>
 					</div>
-					<div class="form-row py-1" th:if="${userDTO.gender == 'M'}">
+					<div class="form-row py-1" th:if="${userUpdateDTO.gender == 0}">
 						<label for="gender" class="form-label">Gender</label>
 						<select class="form-control" th:field="*{gender}">
-							<option selected="selected" th:value="'M'" th:text="Male"></option>
-							<option th:value="'F'" th:text="Female"></option>
+							<option selected="selected" th:value="0" th:text="Male"></option>
+							<option th:value="1" th:text="Female"></option>
 						</select>
 					</div>
-					<div class="form-row py-1" th:if="${userDTO.gender == 'F'}">
+					<div class="form-row py-1" th:if="${userUpdateDTO.gender == 1}">
 						<label for="gender" class="form-label">Gender</label>
 						<select class="form-control" th:field="*{gender}">
-							<option th:value="'M'" th:text="Male"></option>
-							<option selected="selected" th:value="'F'" th:text="Female"></option>
+							<option th:value="0" th:text="Male"></option>
+							<option selected="selected" th:value="1" th:text="Female"></option>
 						</select>
 					</div>
 					<div class="form-row py-1">
@@ -61,18 +61,18 @@
 						<input type="text" name="phone" class="form-control" th:field="*{phone}" id="phone" th:value="*{phone}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="invalid-feedback"></div>
 					</div>
-					<div class="form-row py-1" th:if="${userDTO.type == 'M'}">
+					<div class="form-row py-1" th:if="${userUpdateDTO.type == 1}">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
-						    <option selected="selected" th:value="'M'" th:text="Manager"></option>
-						    <option th:value="'S'" th:text="Saler"></option>
+						    <option selected="selected" th:value="1" th:text="Manager"></option>
+						    <option th:value="2" th:text="Saler"></option>
 						</select>
 					</div>
-					<div class="form-row py-1" th:if="${userDTO.type == 'S'}">
+					<div class="form-row py-1" th:if="${userUpdateDTO.type == 2}">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
-						    <option th:value="'M'" th:text="Manager"></option>
-						    <option selected="selected" th:value="'S'" th:text="Saler"></option>
+						    <option th:value="1" th:text="Manager"></option>
+						    <option selected="selected" th:value="2" th:text="Saler"></option>
 						</select>
 					</div>
 					<div class="form-row py-1">

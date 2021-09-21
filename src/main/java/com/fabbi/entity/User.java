@@ -39,7 +39,7 @@ public class User extends Base {
 	private Date dob;
 	
 	@Column
-	private String gender;
+	private Integer gender;
 	
 	@Column(name = "email")
 	private String email;
@@ -51,7 +51,7 @@ public class User extends Base {
 	private String phone;
 	
 	@Column
-	private String type;
+	private Integer type;
 	
 	@Column
 	private Boolean isActive;

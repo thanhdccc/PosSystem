@@ -58,11 +58,11 @@
 			        <td th:text="${user.email}"></td>
 			        <td th:text="${user.fullname}"></td>
 			        <td th:text="${#dates.format(user.dob, 'yyyy-MM-dd')}"></td>
-			        <td th:text="${user.gender}"></td>
+			        <td th:text="${user.gender == 0 ? 'Male' : 'Female'}"></td>
 			        <td th:text="${user.phone}"></td>
 			        <td th:text="${user.address}"></td>
-			        <td th:text="${user.type}"></td>
-			        <td th:text="${user.isActive}"></td>
+			        <td th:text="${user.type == 1 ? 'Manager' : 'Seller'}"></td>
+			        <td th:text="${user.isActive == true ? 'Active' : 'Inactive'}"></td>
 			        <td style="text-align: center;">
 			          <a th:href="@{/users/edit-user/{id}(id=${user.id})}" class="btn btn-warning btnCustomTh">Edit</a>
 			          <a th:href="@{/users/delete-user/{id}(id=${user.id})}" class="btn btn-danger btnCustomTh">Delete</a>

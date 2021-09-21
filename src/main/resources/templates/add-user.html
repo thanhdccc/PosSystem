@@ -19,7 +19,7 @@
 	<div id="home-main-content">
 		<div class="row justify-content-center align-items-center h-100">
 			<div class="col col-md-5 text-center">
-				<form th:action="@{/users/add-user}" th:object="${userDTO}" method="POST">
+				<form th:action="@{/users/add-user}" th:object="${userCreateDTO}" method="POST">
 					<div class="form-row py-1">
 						<label for="username" class="form-label">Username</label>
 						<input type="text" name="username" class="form-control" id="username" th:value="*{username}" th:errorClass="is-invalid">
@@ -43,8 +43,8 @@
 					<div class="form-row py-1">
 						<label for="gender" class="form-label">Gender</label>
 						<select class="form-control" th:field="*{gender}">
-						    <option th:value="'M'" th:text="Male"></option>
-						    <option th:value="'F'" th:text="Female"></option>
+						    <option th:value="0" th:text="Male"></option>
+						    <option th:value="1" th:text="Female"></option>
 						</select>
 					</div>
 					<div class="form-row py-1">
@@ -65,8 +65,8 @@
 					<div class="form-row py-1">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
-						    <option th:value="'M'" th:text="Manager"></option>
-						    <option th:value="'S'" th:text="Saler"></option>
+						    <option th:value="1" th:text="Manager"></option>
+						    <option th:value="2" th:text="Saler"></option>
 						</select>
 					</div>
 					<div class="form-row py-1">

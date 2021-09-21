@@ -1,6 +1,5 @@
 package com.fabbi.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fabbi.dto.SupplierDTO;
 import com.fabbi.entity.Supplier;
+import com.fabbi.repository.ProductRepository;
 import com.fabbi.repository.SupplierRepository;
 import com.fabbi.service.SupplierService;
 import com.fabbi.util.ObjectMapperUtils;
@@ -24,6 +24,9 @@ public class SupplierServiceImpl implements SupplierService {
 	
 	@Autowired
 	private SupplierRepository supplierRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
 	
 	@Override
 	public Boolean add(SupplierDTO supplierDTO) {
@@ -91,12 +94,7 @@ public class SupplierServiceImpl implements SupplierService {
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 		
 		List<Supplier> supplierList = supplierRepository.findAllBy(pageable);
-		List<SupplierDTO> supplierDTOList = new ArrayList<>();
-		
-		for (Supplier item : supplierList) {
-			SupplierDTO itemDTO = ObjectMapperUtils.map(item, SupplierDTO.class);
-			supplierDTOList.add(itemDTO);
-		}
+		List<SupplierDTO> supplierDTOList = ObjectMapperUtils.mapAll(supplierList, SupplierDTO.class);
 		
 		log.info("######## End get all Supplier ########");
 		
@@ -105,8 +103,29 @@ public class SupplierServiceImpl implements SupplierService {
 
 	@Override
 	public Boolean delete(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("######## Begin delete Supplier by ID: [" + id + "] ########");
+		
+		Supplier supplier = supplierRepository.findOneById(id);
+		
+		if (supplier == null) {
+			log.error("Supplier with id: [" + id + "] not exist");
+			return null;
+		}
+		
+		if (productRepository.countBySupplierId(id) >= 1) {
+			log.error("Delete Supplier with id: [" + id + "] failed because there is product belong to.");
+			return false;
+		}
+		
+		try {
+			supplierRepository.delete(supplier);
+		} catch (Exception e) {
+			log.error("Cannot delete Supplier: " + e.getMessage());
+			return false;
+		}
+		
+		log.info("######## End delete Supplier by ID: [" + id + "] ########");
+		return true;
 	}
 
 	@Override
@@ -116,12 +135,7 @@ public class SupplierServiceImpl implements SupplierService {
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 		
 		List<Supplier> supplierList = supplierRepository.findByKeyword(keyword, pageable);
-		List<SupplierDTO> supplierDTOList = new ArrayList<>();
-		
-		for (Supplier item : supplierList) {
-			SupplierDTO itemDTO = ObjectMapperUtils.map(item, SupplierDTO.class);
-			supplierDTOList.add(itemDTO);
-		}
+		List<SupplierDTO> supplierDTOList = ObjectMapperUtils.mapAll(supplierList, SupplierDTO.class);
 		
 		log.info("######## End search Supplier by keyword: [" + keyword + "] ########");
 		

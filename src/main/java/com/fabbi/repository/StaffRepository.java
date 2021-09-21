@@ -23,15 +23,15 @@ public interface StaffRepository extends JpaRepository<User, Integer> {
     
     List<User> findAllBy(Pageable pageable);
     
-    @Query(value = "SELECT * FROM user u WHERE u.username LIKE %:keyword%"
+    @Query("SELECT u FROM User u WHERE u.username LIKE %:keyword%"
     		+ " OR u.fullname LIKE %:keyword%"
     		+ " OR u.address LIKE %:keyword%"
-    		+ " OR u.email LIKE %:keyword%", nativeQuery = true)
+    		+ " OR u.email LIKE %:keyword%")
     List<User> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
     
-    @Query(value = "SELECT COUNT(*) FROM user u WHERE u.username LIKE %:keyword%"
+    @Query("SELECT COUNT(u.id) FROM User u WHERE u.username LIKE %:keyword%"
     		+ " OR u.fullname LIKE %:keyword%"
     		+ " OR u.address LIKE %:keyword%"
-    		+ " OR u.email LIKE %:keyword%", nativeQuery = true)
+    		+ " OR u.email LIKE %:keyword%")
     Integer countByKeyword(@Param("keyword") String keyword);
 }
