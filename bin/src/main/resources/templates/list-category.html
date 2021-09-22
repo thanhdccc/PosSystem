@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Category</title>
+</head>
+<body>
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+	<div id="home-main-content">
+	
+	  <div style="width: 400px; float: right;">
+	  	<form th:action="@{/categories/search/1}" method="GET">
+		  	<div class="input-group">
+		  		<input id="txtSearch" type="text" name="name" class="form-control rounded" 
+		  		placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+		  		<button class="btn btn-outline-primary" type="submit">Search</button>
+		  	</div>
+	  	</form>
+	  </div>
+	
+	  <div>
+	    <a href="/categories/add-category" class="btn btn-success btnCustomTh">Add</a>
+	  </div>
+	  
+	  <div>&nbsp;</div>
+	  
+	  <div>
+	    <table class="table table-striped table-hover">
+	    	<thead class="table-dark">
+	    		<tr>
+	    			<td scope="col">ID</td>
+			        <td scope="col">Name</td>
+			        <td scope="col">Number of Product</td>
+			        <td scope="col">Description</td>
+			        <td scope="col" style="text-align: center;">Action</td>
+			    </tr>
+	    	</thead>
+	      	<tbody>
+	      		<tr th:each="category : ${categoryList}">
+	      			<th scope="row" th:text="${category.id}"></th>
+			        <td th:text="${category.name}"></td>
+			        <td th:text="${category.numberOfProduct}"></td>
+			        <td th:text="${category.description}"></td>
+			        <td style="text-align: center;">
+			          <a th:href="@{/categories/edit-category/{id}(id=${category.id})}" class="btn btn-warning btnCustomTh">Edit</a>
+			          <a th:href="@{/categories/delete-category/{id}(id=${category.id})}" class="btn btn-danger btnCustomTh">Delete</a>
+			        </td>
+			    </tr>
+	      	</tbody>
+	      
+	    </table>
+	    
+	    <div>&nbsp;</div>
+
+	    <div th:if="${name != null}">
+	    	<div th:if="${totalPages > 1}">
+		    	<nav>
+		    		<ul class="pagination justify-content-center">
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/search/1' + ${'?name=' + name}}" class="page-link">First</a>
+		    			</li>
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/search/' +  ${currentPage - 1} + ${'?name=' + name}}" class="page-link">Previous</a>
+		    			</li>
+		    			
+		    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+		    				<a class="page-link" th:href="@{'/categories/search/' + ${i} + ${'?name=' + name}}">[[${i}]]</a>
+		    			</li>
+		    			
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/search/' + ${currentPage + 1} + ${'?name=' + name}}" class="page-link">Next</a>
+		    			</li>
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/search/' + ${totalPages} + ${'?name=' + name}}" class="page-link">Last</a>
+		    			</li>	    			
+		    		</ul>
+		    	</nav>
+		    </div>
+	    </div>
+	    
+	    <div th:unless="${name != null}">
+	    	<div th:if="${totalPages > 1}">
+		    	<nav>
+		    		<ul class="pagination justify-content-center">
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/1'}" class="page-link">First</a>
+		    			</li>
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/' +  ${currentPage - 1}}" class="page-link">Previous</a>
+		    			</li>
+		    			
+		    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+		    				<a class="page-link" th:href="@{'/categories/' + ${i}}">[[${i}]]</a>
+		    			</li>
+		    			
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/' + ${currentPage + 1}}" class="page-link">Next</a>
+		    			</li>
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/categories/' + ${totalPages}}" class="page-link">Last</a>
+		    			</li>	    			
+		    		</ul>
+		    	</nav>
+		    </div>
+	    </div>
+	    
+	  </div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

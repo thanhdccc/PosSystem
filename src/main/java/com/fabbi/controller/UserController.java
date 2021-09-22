@@ -137,9 +137,9 @@ public class UserController {
 		
 		if (!result) {
 			redirectAttributes.addFlashAttribute("messageFail", "Failed to save.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		}
-		
-		redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		
 		return "redirect:/users/1";
 	}
@@ -170,9 +170,9 @@ public class UserController {
 		
 		if (!result) {
 			redirectAttributes.addFlashAttribute("messageFail", "Failed to update.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
 		}
-		
-		redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
 		
 		return "redirect:/users/1";
 	}
@@ -184,9 +184,9 @@ public class UserController {
 		
 		if (!result) {
 			redirectAttributes.addFlashAttribute("messageFail", "Failed to delete.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
 		}
-		
-		redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
 		
 		return "redirect:/users/1";
 	}

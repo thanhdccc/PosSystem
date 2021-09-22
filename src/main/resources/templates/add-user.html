@@ -43,6 +43,7 @@
 					<div class="form-row py-1">
 						<label for="gender" class="form-label">Gender</label>
 						<select class="form-control" th:field="*{gender}">
+							<option value=""></option>
 						    <option th:value="0" th:text="Male"></option>
 						    <option th:value="1" th:text="Female"></option>
 						</select>
@@ -65,6 +66,7 @@
 					<div class="form-row py-1">
 						<label for="type" class="form-label">Type</label>
 						<select class="form-control" th:field="*{type}">
+							<option value=""></option>
 						    <option th:value="1" th:text="Manager"></option>
 						    <option th:value="2" th:text="Saler"></option>
 						</select>

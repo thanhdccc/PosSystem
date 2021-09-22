@@ -70,9 +70,9 @@
 			        <td th:text="${product.quantity}"></td>
 			        <td th:text="${product.price}"></td>
 			        <td>
-			        	<img th:src="@{${product.thumbnailImagePath}}">
+			        	<img style="width: 80px; height: 40px;" th:src="@{${product.thumbnailImagePath}}">
 			        </td>
-			        <td th:text="${product.unit}"></td>
+			        <td th:text="${product.unit == 0 ? 'Kilogram' : 'Piece'}"></td>
 			        <td th:text="${product.supplierName}"></td>
 			        <td th:text="${product.categoryName}"></td>
 			        <td th:text="${product.description}"></td>

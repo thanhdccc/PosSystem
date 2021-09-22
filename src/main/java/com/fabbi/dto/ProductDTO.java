@@ -4,8 +4,9 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Range;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,18 +26,18 @@ public class ProductDTO {
 	@Size(min = 2, max = 100, message = "Fullname must be between 2 and 100")
 	private String name;
 	
-	@Pattern(regexp = "^\\d{1,5}$", message = "Input integer only")
-	@NotBlank(message = "Quantity is mandatory")
-	private String quantity;
+	@NotNull(message = "Quantity is mandatory")
+	@Range(min = 1, max = 1000)
+	private Integer quantity;
 	
-	@Pattern(regexp = "^\\d{1,8}$", message = "Input integer only")
-	@NotBlank(message = "Price is mandatory")
-	private String price;
+	@NotNull(message = "Price is mandatory")
+	@Range(min = 1000, max = 999999999)
+	private Integer price;
 
 	private String thumbnail;
 	
-	@NotBlank(message = "Unit is mandatory")
-	private String unit;
+	@NotNull(message = "Unit is mandatory")
+	private Integer unit;
 	
 	@NotNull(message = "Supplier is mandatory")
 	private Integer supplierId;
@@ -60,6 +61,6 @@ public class ProductDTO {
 			return null;
 		}
 		
-		return "/product-images/" + "supplier-" + supplierId + "/" + thumbnail;
+		return "/product-images/" + thumbnail;
 	}
 }

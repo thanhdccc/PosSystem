@@ -27,12 +27,12 @@
 					</div>
 					<div class="form-row py-1">
 						<label for="quantity" class="form-label">Quantity</label>
-						<input type="text" name="quantity" class="form-control" id="quantity" th:value="*{quantity}" th:errorClass="is-invalid">
+						<input type="number" name="quantity" class="form-control" id="quantity" th:value="*{quantity}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="invalid-feedback"></div>
 					</div>
 					<div class="form-row py-1">
 						<label for="price" class="form-label">Price</label>
-						<input type="text" name="price" class="form-control" id="price"  th:value="*{price}" th:errorClass="is-invalid">
+						<input type="number" name="price" class="form-control" id="price"  th:value="*{price}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="invalid-feedback"></div>
 					</div>
 					<div class="form-row py-1">
@@ -42,8 +42,9 @@
 					<div class="form-row py-1">
 						<label for="unit" class="form-label">Unit</label>
 						<select class="form-control" th:field="*{unit}">
-						    <option th:value="'K'" th:text="Kilogram"></option>
-						    <option th:value="'P'" th:text="Piece"></option>
+							<option value=""></option>
+						    <option th:value="0" th:text="Kilogram"></option>
+						    <option th:value="1" th:text="Piece"></option>
 						</select>
 					</div>
 					<div class="form-row py-1">

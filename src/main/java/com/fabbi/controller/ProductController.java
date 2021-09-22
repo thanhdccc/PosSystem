@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,6 +35,7 @@ import com.fabbi.dto.SupplierDTO;
 import com.fabbi.service.CategoryService;
 import com.fabbi.service.ProductService;
 import com.fabbi.service.SupplierService;
+import com.fabbi.util.RandomUtils;
 
 @Controller
 public class ProductController {
@@ -74,6 +76,7 @@ public class ProductController {
 		String name = productDTO.getName();
 		Integer supplierId = productDTO.getSupplierId();
 		Integer categoryId = productDTO.getCategoryId();
+		String filename = null;
 		
 		Boolean isExistBySupplier = productService.isExistByNameAndSupplierId(name, supplierId);
 		
@@ -94,16 +97,20 @@ public class ProductController {
 		}
 		
 		String raw = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-		String filePrefix = raw.substring(raw.indexOf("."));
-		
-		String filename = name + "_" + categoryId + filePrefix;
-		
-		productDTO.setThumbnail(filename);
+		if (!raw.equals("")) {
+			String prefix = raw.substring(raw.lastIndexOf("."));
+			
+			filename = RandomUtils.ramdonString() + "_" + name.hashCode() + "_" + categoryId + "_" + supplierId + prefix;
+			
+			productDTO.setThumbnail(filename);
+		} else {
+			productDTO.setThumbnail("");
+		}
 		
 		Boolean result = productService.add(productDTO);
 		
-		if (result) {
-			Path uploadPath = Paths.get(Constant.UPLOAD_DIR + "/supplier-" + supplierId);
+		if (result && !raw.equals("")) {
+			Path uploadPath = Paths.get(Constant.UPLOAD_DIR);
 			
 			if (!Files.exists(uploadPath)) {
 				Files.createDirectories(uploadPath);
@@ -115,11 +122,97 @@ public class ProductController {
 			} catch (IOException e) {
 				throw new IOException("Could not save uploaded file: [" + filename + "]");
 			}
-		} else {
+			
+			redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
+			
+		} else if (!result) {
+			
 			redirectAttributes.addFlashAttribute("messageFail", "Failed to save.");
+		} else if (result && raw.equals("")) {
+			
+			redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		}
 		
-		redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
+		return "redirect:/products/1";
+	}
+	
+	@GetMapping("/products/edit-product/{id}")
+	public String getEditForm(@PathVariable("id") Integer id, Model model) {
+		ProductDTO productDTO = productService.getById(id);
+		List<CategoryDTO> categoryList = categoryService.findAll();
+		List<SupplierDTO> supplierList = supplierService.findAll();
+		
+		model.addAttribute("productDTO", productDTO);
+		model.addAttribute("categoryList", categoryList);
+		model.addAttribute("supplierList", supplierList);
+		
+		return "edit-product";
+	}
+	
+	@PostMapping("/products/edit-product")
+	public String updateProduct(@Valid ProductDTO productDTO
+			, @RequestParam("thumbnailImage") MultipartFile multipartFile
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) throws IOException {
+		
+		String name = productDTO.getName();
+		Integer supplierId = productDTO.getSupplierId();
+		Integer categoryId = productDTO.getCategoryId();
+		Integer id = productDTO.getId();
+		String filename = null;
+		
+		Boolean isExistBySupplierAndIdNot = productService.isExistByNameAndSupplierIdAndIdNot(name, supplierId, id);
+		if (isExistBySupplierAndIdNot) {
+			bindingResult.addError(new FieldError("productDTO", "name", "Existed product with same name and supplier!"));
+			return "edit-product";
+		}
+		
+		Boolean isExistByCategoryAndIdNot = productService.isExistByNameAndCategoryIdAndIdNot(name, categoryId, id);
+		if (isExistByCategoryAndIdNot) {
+			bindingResult.addError(new FieldError("productDTO", "name", "Existed product with same name and category!"));
+			return "edit-product";
+		}
+		
+		if (bindingResult.hasErrors()) {
+			return "edit-product";
+		}
+		
+		String raw = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+		if (!raw.equals("")) {
+			String prefix = raw.substring(raw.lastIndexOf("."));
+			
+			filename = RandomUtils.ramdonString() + "_" + name.hashCode() + "_" + categoryId + "_" + supplierId + prefix;
+			
+			productDTO.setThumbnail(filename);
+		} else {
+			productDTO.setThumbnail("");
+		}
+		
+		Boolean result = productService.update(productDTO);
+		
+		if (result && !raw.equals("")) {
+			Path uploadPath = Paths.get(Constant.UPLOAD_DIR);
+			
+			if (!Files.exists(uploadPath)) {
+				Files.createDirectories(uploadPath);
+			}
+			
+			try (InputStream inputStream = multipartFile.getInputStream()) {
+				Path filePath = uploadPath.resolve(filename);
+				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				throw new IOException("Could not save uploaded file: [" + filename + "]");
+			}
+			
+			redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
+			
+		} else if (!result) {
+			
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to update.");
+		} else if (result && raw.equals("")) {
+			
+			redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
+		}
 		
 		return "redirect:/products/1";
 	}
@@ -148,5 +241,64 @@ public class ProductController {
 		model.addAttribute("productList", productList);
 		
 		return "list-product";
+	}
+	
+	@GetMapping("/products/search/{pageNo}")
+	public String search(@PathVariable(value = "pageNo") int pageNo, @Param("keyword") String keyword, Model model) {
+		int pageSize = Constant.PAGE_SIZE;
+		int tmp = 0;
+		int totalPage = 0;
+		
+		List<ProductDTO> productList;
+		
+		if (keyword != null) {
+			tmp = productService.countByKeyword(keyword);
+			productList = productService.search(keyword, pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		} else {
+			tmp = productService.count();
+			productList = productService.findPaginated(pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		}
+		
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", totalPage);
+		model.addAttribute("totalItems", productList.size());
+		model.addAttribute("productList", productList);
+		model.addAttribute("keyword", keyword);
+		
+		return "list-product";
+	}
+	
+	@GetMapping("/products/delete-product/{id}")
+	public String deleteCustomer(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+		
+		Boolean result = productService.delete(id);
+		
+		if (!result) {
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to delete.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
+		}
+		
+		return "redirect:/products/1";
 	}
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Add Customer</title>
+</head>
+<body>
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+
+	<div id="home-main-content">
+		<div class="row justify-content-center align-items-center h-100">
+			<div class="col col-md-5 text-center">
+				<form th:action="@{/customers/add-customer}" th:object="${customerDTO}" method="POST">
+					<div class="form-row py-1">
+						<label for="name" class="form-label">Name</label>
+						<input type="text" name="name" class="form-control" id="name"  th:value="*{name}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="email" class="form-label">Email</label>
+						<input type="text" name="email" class="form-control" id="email" th:value="*{email}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="dob" class="form-label">Date of Birth</label>
+						<input type="date" pattern="yyyy-MM-dd" name="dob" class="form-control" id="dob" th:value="*{dob}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="gender" class="form-label">Gender</label>
+						<select class="form-control" th:field="*{gender}">
+						    <option th:value="0" th:text="Male"></option>
+						    <option th:value="1" th:text="Female"></option>
+						</select>
+					</div>
+					<div class="form-row py-1">
+						<label for="phone" class="form-label">Phone Number</label>
+						<input type="text" name="phone" class="form-control" id="phone" th:value="*{phone}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="address" class="form-label">Address</label>
+						<input type="text" name="address" class="form-control" id="address" th:value="*{address}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="note" class="form-label">Note</label>
+						<input type="text" name="note" class="form-control" id="note" th:value="*{note}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>
