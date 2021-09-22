@@ -33,7 +33,19 @@
 	  </div>
 	  
 	  <div>&nbsp;</div>
+
+	  <!-- Success message -->
+	  <div th:if="${messageSuccess != null}" class="alert alert-success text-center" style="width: 30%; margin: auto;">
+	  	[[${messageSuccess}]]
+	  </div>
 	  
+	  <!-- Fail message -->
+	  <div th:if="${messageFail != null}" class="alert alert-danger text-center" style="width: 30%; margin: auto;">
+	  	[[${messageFail}]]
+	  </div>
+	  
+	  <div>&nbsp;</div>
+
 	  <div>
 	    <table class="table table-striped table-hover">
 	    	<thead class="table-dark">

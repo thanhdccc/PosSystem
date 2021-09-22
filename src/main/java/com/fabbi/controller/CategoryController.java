@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabbi.constant.Constant;
 import com.fabbi.dto.CategoryDTO;
@@ -112,7 +113,9 @@ public class CategoryController {
 	}
 	
 	@PostMapping("/categories/add-category")
-	public String addCategory(@Valid CategoryDTO categoryDTO, BindingResult bindingResult) {
+	public String addCategory(@Valid CategoryDTO categoryDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 		
 		Boolean isExistByName = categoryService.isExistByName(categoryDTO.getName());
 		
@@ -128,8 +131,9 @@ public class CategoryController {
 		Boolean result = categoryService.add(categoryDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("categoryDTO", "errorField", "Error to create Category"));
-			return "add-category";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to save.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		}
 		
 		return "redirect:/categories/1";
@@ -143,7 +147,9 @@ public class CategoryController {
 	}
 	
 	@PostMapping("/categories/edit-category")
-	public String updateCategory(@Valid CategoryDTO categoryDTO, BindingResult bindingResult) {
+	public String updateCategory(@Valid CategoryDTO categoryDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 		
 		Boolean isExistByNameAndIdNot = categoryService.isExistByNameAndIdNot(categoryDTO.getName(), categoryDTO.getId());
 		
@@ -159,19 +165,22 @@ public class CategoryController {
 		Boolean result = categoryService.update(categoryDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("categoryDTO", "errorField", "Error to update Category"));
-			return "edit-category";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to update.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
 		}
 		
 		return "redirect:/categories/1";
 	}
 	
 	@GetMapping("/categories/delete-category/{id}")
-	public String deleteCatogory(@PathVariable Integer id) {
+	public String deleteCatogory(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 		Boolean result = categoryService.delete(id);
 		
 		if (!result) {
-			
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to delete.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
 		}
 		
 		return "redirect:/categories/1";

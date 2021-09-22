@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabbi.constant.Constant;
 import com.fabbi.dto.CustomerDTO;
@@ -113,7 +114,9 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/customers/add-customer")
-	public String addCustomer(@Valid CustomerDTO customerDTO, BindingResult bindingResult) {
+	public String addCustomer(@Valid CustomerDTO customerDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 		
 		if (customerDTO.getEmail() != null) {
 			Boolean isExistByEmail= customerService.isExistByEmail(customerDTO.getEmail());
@@ -136,8 +139,9 @@ public class CustomerController {
 		Boolean result = customerService.add(customerDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to create Customer"));
-			return "add-customer";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to save.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		}
 		
 		return "redirect:/customers/1";
@@ -151,7 +155,9 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/customers/edit-customer")
-	public String updateCustomer(@Valid CustomerDTO customerDTO, BindingResult bindingResult) {
+	public String updateCustomer(@Valid CustomerDTO customerDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 		
 		if (customerDTO.getEmail() != null) {
 			Boolean isExistByEmailAndIdNot= customerService.isExistByEmailAndIdNot(customerDTO.getEmail(), customerDTO.getId());
@@ -174,20 +180,23 @@ public class CustomerController {
 		Boolean result = customerService.update(customerDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("customerDTO", "errorField", "Error to update Customer"));
-			return "edit-customer";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to update.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
 		}
 		
 		return "redirect:/customers/1";
 	}
 	
 	@GetMapping("/customers/delete-customer/{id}")
-	public String deleteCustomer(@PathVariable Integer id) {
+	public String deleteCustomer(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 		
 		Boolean result = customerService.delete(id);
 		
 		if (!result) {
-			
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to delete.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
 		}
 		
 		return "redirect:/customers/1";

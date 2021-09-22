@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabbi.constant.Constant;
 import com.fabbi.dto.SupplierDTO;
@@ -112,7 +113,9 @@ public class SupplierController {
 	}
 	
 	@PostMapping("/suppliers/add-supplier")
-	public String addSupplier(@Valid SupplierDTO supplierDTO, BindingResult bindingResult) {
+	public String addSupplier(@Valid SupplierDTO supplierDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 
 		Boolean isExistByEmail = supplierService.isExistByEmail(supplierDTO.getEmail());
 		if (isExistByEmail) {
@@ -133,8 +136,9 @@ public class SupplierController {
 		Boolean result = supplierService.add(supplierDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("supplierDTO", "errorField", "Error to create Supplier"));
-			return "add-supplier";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to save.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 		}
 		
 		return "redirect:/suppliers/1";
@@ -148,7 +152,9 @@ public class SupplierController {
 	}
 	
 	@PostMapping("/suppliers/edit-supplier")
-	public String updateSupplier(@Valid SupplierDTO supplierDTO, BindingResult bindingResult) {
+	public String updateSupplier(@Valid SupplierDTO supplierDTO
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes) {
 
 		Boolean isExistByEmail = supplierService.isExistByEmailAndIdNot(supplierDTO.getEmail(), supplierDTO.getId());
 		if (isExistByEmail) {
@@ -169,19 +175,22 @@ public class SupplierController {
 		Boolean result = supplierService.update(supplierDTO);
 		
 		if (!result) {
-			bindingResult.addError(new FieldError("supplierDTO", "errorField", "Error to update Supplier"));
-			return "edit-supplier";
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to update.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Updated successfully.");
 		}
 		
 		return "redirect:/suppliers/1";
 	}
 	
 	@GetMapping("/suppliers/delete-supplier/{id}")
-	public String deleteSupplier(@PathVariable Integer id) {
+	public String deleteSupplier(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 		Boolean result = supplierService.delete(id);
 		
 		if (!result) {
-			
+			redirectAttributes.addFlashAttribute("messageFail", "Failed to delete.");
+		} else {
+			redirectAttributes.addFlashAttribute("messageSuccess", "Deleted successfully.");
 		}
 		
 		return "redirect:/suppliers/1";
