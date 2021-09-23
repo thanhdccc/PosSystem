@@ -19,13 +19,10 @@
 	<div id="home-main-content">
 	
 	  <div style="width: 400px; float: right;">
-	  	<form th:action="@{/orders/search/1}" method="GET">
-		  	<div class="input-group">
-		  		<input id="txtSearch" type="text" name="keyword" class="form-control rounded" 
-		  		placeholder="Search" aria-label="Search" aria-describedby="search-addon">
-		  		<button class="btn btn-outline-primary" type="submit">Search</button>
-		  	</div>
-	  	</form>
+		  <div class="input-group">
+		  	<input id="txtSearchOrder" type="text" class="form-control rounded" 
+		  	placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+		  </div>
 	  </div>
 	
 	  <div>
@@ -56,7 +53,7 @@
 			        <td scope="col" style="text-align: center;">Action</td>
 			    </tr>
 	    	</thead>
-	      	<tbody>
+	      	<tbody id="orderTableBody">
 	      		<tr th:each="order : ${orderList}">
 	      			<th scope="row" th:text="${order.id}"></th>
 			        <td th:text="${order.status == 0 ? 'Wait' : 'Process'}"></td>

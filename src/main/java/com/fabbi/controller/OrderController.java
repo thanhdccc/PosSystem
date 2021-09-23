@@ -1,7 +1,9 @@
 package com.fabbi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,5 +102,46 @@ public class OrderController {
 		}
 		
 		return "redirect:/orders/1";
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("/orders/add-item/{id}")
+	public String addItem(HttpSession session, @PathVariable("id") Integer id) {
+		
+		List<ProductDTO> itemList;
+		
+		if (session.getAttribute("order") == null) {
+			itemList = new ArrayList<>();
+			ProductDTO itemDTO = productService.getById(id);
+			itemDTO.setQuantity(1);
+			itemList.add(itemDTO);
+			
+			session.setAttribute("order", itemList);
+		} else {
+			itemList = (List<ProductDTO>) session.getAttribute("order");
+			ProductDTO itemDTO = productService.getById(id);
+			ProductDTO tmp = itemList.stream().filter(o -> o.getId() == itemDTO.getId()).findAny().orElse(null);
+			if (tmp != null) {
+				int index = 0;
+				for (ProductDTO productDTO : itemList) {
+					if (productDTO.getId() == tmp.getId()) {
+						index = itemList.indexOf(productDTO);
+					}
+				}
+				
+				Integer quantity = tmp.getQuantity() + 1;
+				tmp.setQuantity(quantity);
+				
+				itemList.remove(index);
+				itemList.add(tmp);
+			} else {
+				itemDTO.setQuantity(1);
+				itemList.add(itemDTO);
+			}
+			
+			session.removeAttribute("order");
+			session.setAttribute("order", itemList);
+		}
+		return "redirect:/orders/add-order";
 	}
 }

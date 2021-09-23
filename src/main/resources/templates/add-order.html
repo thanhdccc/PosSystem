@@ -17,45 +17,45 @@
 	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
 	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
 	<div id="home-main-content">
-	
-	  <div>
-	    <form th:action="@{/orders/add-order}" th:object="${orderDTO}" method="POST">
-	    	
-	    </form>
-	  </div>
-	  
-	  <div>
-	    <table class="table table-striped table-hover">
-	    	<thead class="table-dark">
-	    		<tr>
-			        <td scope="col">Name</td>
-			        <td scope="col">Quantity</td>
-			        <td scope="col">Price</td>
-			        <td scope="col">Thumbnail</td>
-			        <td scope="col">Unit</td>
-			        <td scope="col">Supplier</td>
-			        <td scope="col">Category</td>
-			        <td scope="col" style="text-align: center;">Action</td>
-			    </tr>
-	    	</thead>
-	      	<tbody>
-	      		<tr th:each="product : ${productList}">
-			        <td th:text="${product.name}"></td>
-			        <td th:text="${product.quantity}"></td>
-			        <td th:text="${product.price}"></td>
-			        <td>
-			        	<img style="width: 80px; height: 40px;" th:src="@{${product.thumbnailImagePath}}">
-			        </td>
-			        <td th:text="${product.unit == 0 ? 'Kilogram' : 'Piece'}"></td>
-			        <td th:text="${product.supplierName}"></td>
-			        <td th:text="${product.categoryName}"></td>
-			        <td style="text-align: center;">
-			        	<a th:href="@{/orders/add-product/{id}(id=${product.id})}" class="btn btn-warning btnCustomTh">Add</a>
-			        </td>
-			    </tr>
-	      	</tbody>
-	    </table>
-	  </div>
+		<div class="row">
+			<div class="col-sm-4">
+				<h1 style="text-align: center;">Order Detail</h1>
+				<div>&nbsp;</div>
+			    <form th:action="@{/orders/add-order}" th:object="${orderDTO}" method="POST">
+			    	<div class="row" th:if="${session.containsKey('order')}" th:each="item : ${session.order}">
+			    		<div class="col-md-4">
+			    			<img style="height: 100px;" class="card-img-top" th:src="@{${item.thumbnailImagePath}}">
+			    		</div>
+			    		<div class="col-md-4" th:text="${item.name}"></div>
+			    		<div class="col-md-4" th:text="'Quantity: ' + ${item.quantity}"></div>
+			    		<div>&nbsp;</div>
+			    	</div>
+			    </form>
+		  	</div>
+		  	
+		  	<div class="col-sm-8">
+		  		<h1 style="text-align: center;">Product</h1>
+		  		<div>&nbsp;</div>
+		  		<div class="row">
+		  			<div th:each="product : ${productList}" class="col-12 col-md-6 col-lg-2">
+		  				<div class="card">
+		  					<img style="height: 100px;" class="card-img-top" th:src="@{${product.thumbnailImagePath}}">
+		  					<div class="card-body">
+		  						<p class="card-text text-center fs-5" th:text="${product.name}"></p>
+		  						<div class="row">
+		  							<div class="col">
+		  								<p class="card-text text-center fs-6" th:text="'Price: ' + ${product.price}"></p>
+		  							</div>
+		  							<div class="col text-center">
+		  								<a th:href="@{/orders/add-item/{id}(id=${product.id})}" class="btn btn-warning">Add</a>
+		  							</div>
+		  						</div>
+		  					</div>
+		  				</div>
+		  			</div>
+		  		</div>
+		  	</div>
+		</div>
 	</div>
 	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
 
