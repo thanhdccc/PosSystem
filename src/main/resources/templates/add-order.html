@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">User</title>
+</head>
+<body>
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+	<div id="home-main-content">
+	
+	  <div>
+	    <form th:action="@{/orders/add-order}" th:object="${orderDTO}" method="POST">
+	    	
+	    </form>
+	  </div>
+	  
+	  <div>
+	    <table class="table table-striped table-hover">
+	    	<thead class="table-dark">
+	    		<tr>
+			        <td scope="col">Name</td>
+			        <td scope="col">Quantity</td>
+			        <td scope="col">Price</td>
+			        <td scope="col">Thumbnail</td>
+			        <td scope="col">Unit</td>
+			        <td scope="col">Supplier</td>
+			        <td scope="col">Category</td>
+			        <td scope="col" style="text-align: center;">Action</td>
+			    </tr>
+	    	</thead>
+	      	<tbody>
+	      		<tr th:each="product : ${productList}">
+			        <td th:text="${product.name}"></td>
+			        <td th:text="${product.quantity}"></td>
+			        <td th:text="${product.price}"></td>
+			        <td>
+			        	<img style="width: 80px; height: 40px;" th:src="@{${product.thumbnailImagePath}}">
+			        </td>
+			        <td th:text="${product.unit == 0 ? 'Kilogram' : 'Piece'}"></td>
+			        <td th:text="${product.supplierName}"></td>
+			        <td th:text="${product.categoryName}"></td>
+			        <td style="text-align: center;">
+			        	<a th:href="@{/orders/add-product/{id}(id=${product.id})}" class="btn btn-warning btnCustomTh">Add</a>
+			        </td>
+			    </tr>
+	      	</tbody>
+	    </table>
+	  </div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

@@ -14,6 +14,8 @@ public interface CustomerService {
 	
 	CustomerDTO getById(Integer id);
 	
+	List<CustomerDTO> findAll();
+	
 	List<CustomerDTO> findPaginated(int pageNo, int pageSize);
 	
 	List<CustomerDTO> search(String keyword, int pageNo, int pageSize);

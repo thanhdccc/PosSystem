@@ -282,4 +282,19 @@ public class ProductServiceImpl implements ProductService {
 	public Boolean isExistByNameAndSupplierIdAndIdNot(String name, Integer supplierId, Integer id) {
 		return productRepositoty.existsByNameAndSupplierIdAndIdNot(name, supplierId, id);
 	}
+
+	@Override
+	public List<ProductDTO> findAll() {
+		List<Product> productList = productRepositoty.findAll();
+		List<ProductDTO> productDTOList = new ArrayList<>();
+		
+		for (Product item: productList) {
+			ProductDTO itemDTO = ObjectMapperUtils.map(item, ProductDTO.class);
+			itemDTO.setCategoryName(item.getCategory().getName());
+			itemDTO.setSupplierName(item.getSupplier().getName());
+			productDTOList.add(itemDTO);
+		}
+		
+		return productDTOList;
+	}
 }

@@ -37,11 +37,11 @@ public class OrderDetail extends Base {
 	private Integer quantity;
 	
 	@Column(name = "price", nullable = false)
-	private Float price;
+	private Integer price;
 	
 	@Column(name = "amount", nullable = false)
-	private Float amount;
+	private Integer amount;
 	
 	@Column(name = "unit", nullable = false)
-	private String unit;
+	private Integer unit;
 }
