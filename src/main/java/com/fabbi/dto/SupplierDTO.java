@@ -34,7 +34,7 @@ public class SupplierDTO {
 	@NotBlank(message = "City is mandatory")
 	private String city;
 	
-	@Email(message = "Email in not correct format")
+	@Email(message = "Email is wrong format")
 	@NotBlank(message = "Email is mandatory")
 	private String email;
 

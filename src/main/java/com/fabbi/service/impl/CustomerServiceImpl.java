@@ -178,4 +178,10 @@ public class CustomerServiceImpl implements CustomerService {
 	public Boolean isExistByEmailAndIdNot(String email, Integer id) {
 		return customerRepository.existsByEmailAndIdNot(email, id);
 	}
+
+	@Override
+	public List<CustomerDTO> findAll() {
+		List<Customer> customerList = customerRepository.findAll();
+		return ObjectMapperUtils.mapAll(customerList, CustomerDTO.class);
+	}
 }

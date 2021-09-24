@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Add Order</title>
+</head>
+<body>
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+	<div id="home-main-content">
+		<div class="row">
+			<div class="col-sm-4">
+				<h1 style="text-align: center;">Order Detail</h1>
+				<div>&nbsp;</div>
+			    <form th:action="@{/orders/add-order}" th:object="${orderDTO}" method="POST">
+			    	<div class="row justify-content-center align-items-center h-100">
+						<div class="col col-md-5 text-center">
+							<div class="form-row py-1">
+								<label for="customerId" class="form-label">Customer</label>
+								<select class="form-control" th:field="*{customerId}">
+								    <option value=""></option>
+								    <option th:each="customer : ${customerList}"
+								    	th:value="${customer.id}" th:text="${customer.phone}" />
+								</select>
+							</div>
+						</div>
+			    	</div>
+			    	<div>&nbsp;</div>
+			    	<div class="row" th:if="${session.containsKey('order')}" th:each="item : ${session.order}">
+			    		<div class="col-md-3">
+			    			<img style="height: 100px;" class="card-img-top" th:src="@{${item.thumbnailImagePath}}">
+			    		</div>
+			    		<div class="col-md-3 fw-bold" th:text="${item.name}"></div>
+			    		<div class="col-md-3 fw-bold" th:text="'Quantity: ' + ${item.quantity}"></div>
+			    		<div class="col-md-3 row">
+			    			<div class="col-md-4">
+			    				<a th:text="'-'" th:href="@{/orders/reduce-item/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
+			    			</div>
+			    			<div class="col-md-4">
+			    				<a th:text="'+'" th:href="@{/orders/add-item/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
+			    			</div>
+			    			<div class="col-md-4">
+			    				<a th:text="'x'" th:href="@{/orders/remove-item/{id}(id=${item.id})}" class="btn btn-danger fw-bold btnCustomTh1" />
+			    			</div>
+			    		</div>
+			    		<div>&nbsp;</div>
+			    	</div>
+			    	<div>&nbsp;</div>
+			    	<div class="form-row py-1">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+			    </form>
+		  	</div>
+		  	
+		  	<div class="col-sm-8">
+		  		<h1 style="text-align: center;">Product</h1>
+		  		<div>&nbsp;</div>
+		  		<div class="row">
+		  			<div th:each="product : ${productList}" class="col-12 col-md-6 col-lg-2">
+		  				<div class="card">
+		  					<img style="height: 100px;" class="card-img-top" th:src="@{${product.thumbnailImagePath}}">
+		  					<div class="card-body">
+		  						<p class="card-text text-center fs-5" th:text="${product.name}"></p>
+		  						<div class="row">
+		  							<div class="col">
+		  								<p class="card-text text-center fs-6" th:text="'Price: ' + ${product.price}"></p>
+		  							</div>
+		  							<div class="col text-center">
+		  								<a th:href="@{/orders/add-item/{id}(id=${product.id})}" class="btn btn-success">Add</a>
+		  							</div>
+		  						</div>
+		  					</div>
+		  				</div>
+		  			</div>
+		  		</div>
+		  	</div>
+		</div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

@@ -46,7 +46,7 @@ public class UserCreateDTO {
 	@NotBlank(message = "Address is mandatory")
 	private String address;
 	
-	@Email(message = "Email in not correct format")
+	@Email(message = "Email is wrong format")
 	@NotBlank(message = "Email is mandatory")
 	private String email;
 
