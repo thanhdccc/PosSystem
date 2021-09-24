@@ -74,6 +74,7 @@ public class OrderController {
 
 	@GetMapping("/orders/add-order")
 	public String getAddForm(@ModelAttribute OrderDTO orderDTO, Model model) {
+		
 		List<CustomerDTO> customerList = customerService.findAll();
 		List<ProductDTO> productList = productService.findAll();
 		
@@ -81,6 +82,51 @@ public class OrderController {
 		model.addAttribute("productList", productList);
 		
 		return "add-order";
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("/orders/edit-order/{id}")
+	public String getEditForm(@PathVariable Integer id, Model model, HttpSession session) {
+
+		List<CustomerDTO> customerList = customerService.findAll();
+		List<ProductDTO> productList = productService.findAll();
+		List<ProductDTO> productDTOList;
+		OrderDTO orderDTO = null;
+		
+		if (session.getAttribute(Constant.SESSION_ORDER_INFOR) == null) {
+			orderDTO = orderService.findOneById(id);
+			session.setAttribute(Constant.SESSION_ORDER_INFOR, orderDTO);
+		}
+		
+		orderDTO = (OrderDTO) session.getAttribute(Constant.SESSION_ORDER_INFOR);
+		
+		if (session.getAttribute(Constant.SESSION_NAME_EDIT) != null) {
+			
+			productDTOList = (List<ProductDTO>) session.getAttribute(Constant.SESSION_NAME_EDIT);
+		} else {
+			
+			List<OrderDetailDTO> orderDetailDTOList = orderDTO.getItems();
+			productDTOList = new ArrayList<>();
+			
+			for (OrderDetailDTO item : orderDetailDTOList) {
+				ProductDTO itemDTO = new ProductDTO();
+				itemDTO.setId(item.getId());
+				itemDTO.setName(item.getName());
+				itemDTO.setQuantity(item.getQuantity());
+				itemDTO.setThumbnail(item.getThumbnail());
+				
+				productDTOList.add(itemDTO);
+			}
+		}
+		
+		
+		session.setAttribute(Constant.SESSION_NAME_EDIT, productDTOList);
+
+		model.addAttribute("orderDTO", orderDTO);
+		model.addAttribute("customerList", customerList);
+		model.addAttribute("productList", productList);
+		
+		return "edit-order";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -94,7 +140,7 @@ public class OrderController {
 			return "add-order";
 		}
 		
-		List<ProductDTO> itemList = (List<ProductDTO>) session.getAttribute("order");
+		List<ProductDTO> itemList = (List<ProductDTO>) session.getAttribute(Constant.SESSION_NAME_CREATE);
 		List<OrderDetailDTO> itemDTOList = new ArrayList<>();
 		
 		if (itemList == null) {
@@ -118,7 +164,7 @@ public class OrderController {
 				
 				redirectAttributes.addFlashAttribute("messageFail", "Failed to saved.");
 			} else {
-				session.removeAttribute("order");
+				session.removeAttribute(Constant.SESSION_NAME_CREATE);
 				
 				redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 			}
@@ -128,22 +174,28 @@ public class OrderController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@GetMapping("/orders/add-item/{id}")
-	public String addItem(HttpSession session, @PathVariable("id") Integer id) {
+	@GetMapping("/orders/add-item/{form}/{id}")
+	public String addItem(HttpSession session, @PathVariable("id") Integer id, @PathVariable("form") Integer form) {
 		
 		List<ProductDTO> itemList;
+		OrderDTO orderDTO = null;
 		
-		if (session.getAttribute("order") == null) {
+		if (form == Constant.ORDER_FORM_EDIT) {
+			orderDTO = (OrderDTO) session.getAttribute(Constant.SESSION_ORDER_INFOR);
+		}
+		
+		String sessionName = form == Constant.ORDER_FORM_CREATE ? Constant.SESSION_NAME_CREATE : Constant.SESSION_NAME_EDIT;
+		
+		if (session.getAttribute(sessionName) == null) {
 			itemList = new ArrayList<>();
 			ProductDTO itemDTO = productService.getById(id);
 			itemDTO.setQuantity(1);
 			itemList.add(itemDTO);
 			
-			session.setAttribute("order", itemList);
+			session.setAttribute(sessionName, itemList);
 		} else {
-			itemList = (List<ProductDTO>) session.getAttribute("order");
-			ProductDTO itemDTO = productService.getById(id);
-			ProductDTO tmp = itemList.stream().filter(o -> o.getId() == itemDTO.getId()).findAny().orElse(null);
+			itemList = (List<ProductDTO>) session.getAttribute(sessionName);
+			ProductDTO tmp = itemList.stream().filter(o -> o.getId() == id).findAny().orElse(null);
 			
 			if (tmp != null) {
 				
@@ -153,21 +205,31 @@ public class OrderController {
 				itemList.remove(tmp);
 				itemList.add(tmp);
 			} else {
+				ProductDTO itemDTO = productService.getById(id);
 				itemDTO.setQuantity(1);
 				itemList.add(itemDTO);
 			}
 			
-			session.removeAttribute("order");
-			session.setAttribute("order", itemList);
+			session.removeAttribute(sessionName);
+			session.setAttribute(sessionName, itemList);
 		}
-		return "redirect:/orders/add-order";
+		
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order" : "redirect:/orders/edit-order/" + orderDTO.getId();
 	}
 	
 	@SuppressWarnings("unchecked")
-	@GetMapping("/orders/reduce-item/{id}")
-	public String reduceItem(HttpSession session, @PathVariable("id") Integer id) {
+	@GetMapping("/orders/reduce-item/{form}/{id}")
+	public String reduceItem(HttpSession session, @PathVariable("id") Integer id, @PathVariable("form") Integer form) {
 		
-		List<ProductDTO> itemList = (List<ProductDTO>) session.getAttribute("order");
+		OrderDTO orderDTO = null;
+		
+		if (form == Constant.ORDER_FORM_EDIT) {
+			orderDTO = (OrderDTO) session.getAttribute(Constant.SESSION_ORDER_INFOR);
+		}
+		
+		String sessionName = form == Constant.ORDER_FORM_CREATE ? Constant.SESSION_NAME_CREATE : Constant.SESSION_NAME_EDIT;
+		
+		List<ProductDTO> itemList = (List<ProductDTO>) session.getAttribute(sessionName);
 		ProductDTO tmp = itemList.stream().filter(o -> o.getId() == id).findAny().orElse(null);
 
 		Integer quantity = tmp.getQuantity() - 1;
@@ -181,24 +243,32 @@ public class OrderController {
 			itemList.add(tmp);
 		}
 
-		session.removeAttribute("order");
-		session.setAttribute("order", itemList);
-
-		return "redirect:/orders/add-order";
+		session.removeAttribute(sessionName);
+		session.setAttribute(sessionName, itemList);
+		
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order" : "redirect:/orders/edit-order/" + orderDTO.getId();
 	}
 	
 	@SuppressWarnings("unchecked")
-	@GetMapping("/orders/remove-item/{id}")
-	public String removeItem(HttpSession session, @PathVariable("id") Integer id) {
+	@GetMapping("/orders/remove-item/{form}/{id}")
+	public String removeItem(HttpSession session, @PathVariable("id") Integer id, @PathVariable("form") Integer form) {
 		
-		List<ProductDTO> itemList = (List<ProductDTO>) session.getAttribute("order");
+		OrderDTO orderDTO = null;
+		
+		if (form == Constant.ORDER_FORM_EDIT) {
+			orderDTO = (OrderDTO) session.getAttribute(Constant.SESSION_ORDER_INFOR);
+		}
+		
+		String sessionName = form == Constant.ORDER_FORM_CREATE ? Constant.SESSION_NAME_CREATE : Constant.SESSION_NAME_EDIT;
+		
+		List<ProductDTO> itemList = (List<ProductDTO>) session.getAttribute(sessionName);
 		ProductDTO tmp = itemList.stream().filter(o -> o.getId() == id).findAny().orElse(null);
 		
 		itemList.remove(tmp);
 
-		session.removeAttribute("order");
-		session.setAttribute("order", itemList);
+		session.removeAttribute(sessionName);
+		session.setAttribute(sessionName, itemList);
 		
-		return "redirect:/orders/add-order";
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order" : "redirect:/orders/edit-order/" + orderDTO.getId();
 	}
 }

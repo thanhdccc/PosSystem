@@ -1,7 +1,7 @@
 package com.fabbi.constant;
 
 public final class Constant {
-	public static final int PAGE_SIZE = 1;
+	public static final int PAGE_SIZE = 4;
 	
 	public static final int CUSTOMER_TYPE_NEW = 1;
 	public static final int CUSTOMER_TYPE_CLOSE = 2;
@@ -22,4 +22,11 @@ public final class Constant {
 	public static final int ORDER_STATUS_PROCESS = 1;
 	
 	public static final String UPLOAD_DIR = "./product-images";
+	
+	public static final String SESSION_NAME_CREATE = "orderSessionCreate";
+	public static final String SESSION_NAME_EDIT = "orderSessionEdit";
+	public static final String SESSION_ORDER_INFOR = "orderInforSession";
+	
+	public static final int ORDER_FORM_CREATE = 0;
+	public static final int ORDER_FORM_EDIT = 1;
 }

@@ -23,6 +23,8 @@ public class OrderDetailDTO {
 	@NotNull(message = "Product is mandatory")
 	private Integer productId;
 	
+	private String name;
+	
 	private String thumbnail;
 	
 	@NotNull(message = "Quantity is mandatory")

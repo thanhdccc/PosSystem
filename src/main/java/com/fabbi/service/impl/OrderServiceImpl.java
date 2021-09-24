@@ -165,4 +165,44 @@ public class OrderServiceImpl implements OrderService {
 		return (int) orderRepository.count();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Boolean update(OrderDTO orderDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OrderDTO findOneById(Integer id) {
+		log.info("######## Begin get Order by ID ########");
+		
+		Order order = orderRepository.findOneById(id);
+
+		if (order == null) {
+			log.error("Order with id: [" + id + "] not exist");
+			return null;
+		}
+		
+		List<OrderDetail> orderDetailList = order.getItems();
+		List<OrderDetailDTO> orderDetailDTOList = new ArrayList<>();
+		
+		for (OrderDetail item : orderDetailList) {
+			OrderDetailDTO itemDTO = ObjectMapperUtils.map(item, OrderDetailDTO.class);
+			itemDTO.setProductId(item.getProduct().getId());
+			itemDTO.setOrderId(item.getOrder().getId());
+			itemDTO.setThumbnail(item.getThumbnail());
+			itemDTO.setName(item.getProduct().getName());
+			
+			orderDetailDTOList.add(itemDTO);
+		}
+		
+		OrderDTO orderDTO = ObjectMapperUtils.map(order, OrderDTO.class);
+		orderDTO.setItems(orderDetailDTOList);
+		if (order.getCustomer() != null) {
+			orderDTO.setCustomerId(order.getCustomer().getId());
+		}
+		
+		return orderDTO;
+	}
+
 }

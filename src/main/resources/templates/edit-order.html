@@ -11,7 +11,7 @@
                                                 ~{:: #home-footer}
                                                )}">
 <head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
-	<title id="pageTitle">Add Order</title>
+	<title id="pageTitle">Edit Order</title>
 </head>
 <body>
 	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
@@ -21,21 +21,37 @@
 			<div class="col-sm-4">
 				<h1 style="text-align: center;">Order Detail</h1>
 				<div>&nbsp;</div>
-			    <form th:action="@{/orders/add-order}" th:object="${orderDTO}" method="POST">
+			    <form th:action="@{/orders/edit-order}" th:object="${orderDTO}" method="POST">
 			    	<div class="row justify-content-center align-items-center h-100">
+			    		<div class="col col-md-5 text-center">
+			    			<div class="form-row py-1" th:if="${orderDTO.status == 0}">
+								<label for="status" class="form-label">Status</label>
+								<select class="form-control" th:field="*{status}">
+								    <option th:value="0" th:text="Wait" selected="selected"></option>
+								    <option th:value="1" th:text="Process"></option>
+								</select>
+							</div>
+							<div class="form-row py-1" th:if="${orderDTO.status == 1}">
+								<label for="status" class="form-label">Status</label>
+								<select class="form-control" th:field="*{status}">
+								    <option th:value="0" th:text="Wait"></option>
+								    <option th:value="1" th:text="Process" selected="selected"></option>
+								</select>
+							</div>
+			    		</div>
 						<div class="col col-md-5 text-center">
 							<div class="form-row py-1">
 								<label for="customerId" class="form-label">Customer</label>
 								<select class="form-control" th:field="*{customerId}">
 								    <option value=""></option>
 								    <option th:each="customer : ${customerList}"
-								    	th:value="${customer.id}" th:text="${customer.phone}" />
+								    	th:value="${customer.id}" th:text="${customer.phone}" th:selected="${customer.id == customerId}" />
 								</select>
 							</div>
 						</div>
 			    	</div>
 			    	<div>&nbsp;</div>
-			    	<div class="row" th:if="${session.containsKey('orderSessionCreate')}" th:each="item : ${session.orderSessionCreate}">
+			    	<div class="row" th:if="${session.containsKey('orderSessionEdit')}" th:each="item : ${session.orderSessionEdit}">
 			    		<div class="col-md-3">
 			    			<img style="height: 100px;" class="card-img-top" th:src="@{${item.thumbnailImagePath}}">
 			    		</div>
@@ -43,13 +59,13 @@
 			    		<div class="col-md-3 fw-bold" th:text="'Quantity: ' + ${item.quantity}"></div>
 			    		<div class="col-md-3 row">
 			    			<div class="col-md-4">
-			    				<a th:text="'-'" th:href="@{/orders/reduce-item/0/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
+			    				<a th:text="'-'" th:href="@{/orders/reduce-item/1/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
 			    			</div>
 			    			<div class="col-md-4">
-			    				<a th:text="'+'" th:href="@{/orders/add-item/0/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
+			    				<a th:text="'+'" th:href="@{/orders/add-item/1/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
 			    			</div>
 			    			<div class="col-md-4">
-			    				<a th:text="'x'" th:href="@{/orders/remove-item/0/{id}(id=${item.id})}" class="btn btn-danger fw-bold btnCustomTh1" />
+			    				<a th:text="'x'" th:href="@{/orders/remove-item/1/{id}(id=${item.id})}" class="btn btn-danger fw-bold btnCustomTh1" />
 			    			</div>
 			    		</div>
 			    		<div>&nbsp;</div>
@@ -75,7 +91,7 @@
 		  								<p class="card-text text-center fs-6" th:text="'Price: ' + ${product.price}"></p>
 		  							</div>
 		  							<div class="col text-center">
-		  								<a th:href="@{/orders/add-item/0/{id}(id=${product.id})}" class="btn btn-success">Add</a>
+		  								<a th:href="@{/orders/add-item/1/{id}(id=${product.id})}" class="btn btn-success">Add</a>
 		  							</div>
 		  						</div>
 		  					</div>

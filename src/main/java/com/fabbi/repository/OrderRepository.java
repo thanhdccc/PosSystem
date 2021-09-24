@@ -11,5 +11,7 @@ import com.fabbi.entity.Order;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
+	Order findOneById(Integer id);
+
 	List<Order> findAllBy(Pageable pageable);
 }
