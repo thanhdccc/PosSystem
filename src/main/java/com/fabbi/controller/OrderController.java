@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -85,6 +86,80 @@ public class OrderController {
 		model.addAttribute("totalPages", totalPage);
 		model.addAttribute("totalItems", orderList.size());
 		model.addAttribute("orderList", orderList);
+		
+		return "list-order";
+	}
+	
+	@GetMapping("/orders/search/{pageNo}")
+	public String search(@PathVariable(value = "pageNo") int pageNo, @Param("keyword") String keyword, Model model, HttpSession session) {
+		
+		String keywordTmp = keyword;
+		
+		if (keyword != null) {
+			if (Constant.ORDER_STATUS_WAIT_TEXT.toLowerCase().contains(keyword.toLowerCase())) {
+				
+				keyword = String.valueOf(Constant.ORDER_STATUS_WAIT);
+			} else if (Constant.ORDER_STATUS_PROCESS_TEXT.toLowerCase().contains(keyword.toLowerCase())) {
+				
+				keyword = String.valueOf(Constant.ORDER_STATUS_PROCESS);
+			} else {
+				
+				keyword = "999";
+			}
+		}
+		
+		int pageSize = Constant.PAGE_SIZE;
+		int tmp = 0;
+		int totalPage = 0;
+		List<OrderDTO> orderList = null;
+		
+		if (session.getAttribute(Constant.SESSION_ORDER_INFOR) != null) {
+			session.removeAttribute(Constant.SESSION_ORDER_INFOR);
+		}
+		
+		if (session.getAttribute(Constant.SESSION_NAME_EDIT) != null) {
+			session.removeAttribute(Constant.SESSION_NAME_EDIT);
+		}
+		
+		if (session.getAttribute(Constant.SESSION_NAME_CREATE) != null) {
+			session.removeAttribute(Constant.SESSION_NAME_CREATE);
+		}
+		
+		if (keyword != null) {
+			tmp = orderService.countByKeyword(Integer.parseInt(keyword));
+
+			orderList = orderService.searchStatus(Integer.parseInt(keyword), pageNo, pageSize);
+
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		} else {
+			tmp = orderService.count();
+			
+			orderList = orderService.findPaginated(pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		}
+		
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", totalPage);
+		model.addAttribute("totalItems", orderList.size());
+		model.addAttribute("orderList", orderList);
+		model.addAttribute("keyword", keywordTmp);
 		
 		return "list-order";
 	}

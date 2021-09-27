@@ -376,15 +376,35 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderDTO> search(String keyword, int pageNo, int pageSize) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<OrderDTO> searchStatus(Integer keyword, int pageNo, int pageSize) {
+		log.info("######## Begin get all Order by keyword: ["+ keyword +"] ########");
+		
+		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+		
+		List<Order> orderList = orderRepository.findByKeyword(keyword, pageable);
+		List<OrderDTO> orderDTOList = new ArrayList<>();
+		
+		for (Order item : orderList) {
+			OrderDTO itemDTO = ObjectMapperUtils.map(item, OrderDTO.class);
+			itemDTO.setNumberOfItem(item.getItems().size());
+			
+			if (item.getCustomer() != null) {
+				itemDTO.setCustomerName(item.getCustomer().getName());
+			} else {
+				itemDTO.setCustomerName("Unknown");
+			}
+			
+			orderDTOList.add(itemDTO);
+		}
+		
+		log.info("######## End get all Order by keyword: ["+ keyword +"] ########");
+		
+		return orderDTOList;
 	}
 
 	@Override
-	public Integer countByKeyword(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer countByKeyword(Integer keyword) {
+		return orderRepository.countByKeyword(keyword);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -446,5 +466,4 @@ public class OrderServiceImpl implements OrderService {
 		
 		return true;
 	}
-
 }
