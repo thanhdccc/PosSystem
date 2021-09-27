@@ -168,8 +168,178 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Boolean update(OrderDTO orderDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		Integer totalAmount = 0;
+		List<OrderDetail> oldItemList = new ArrayList<>();
+		List<OrderDetail> newItemListChange = new ArrayList<>();
+		List<OrderDetailDTO> newItemList = new ArrayList<>();
+		
+		log.info("######## Begin update Order ########");
+		
+		Integer orderID = orderDTO.getId();
+		
+		Order oldOrder = orderRepository.findOneById(orderID);
+		
+		if (oldOrder == null) {
+			log.error("Order with id: [" + orderID + "] not exist.");
+			return false;
+		}
+		
+		if (oldOrder.getStatus() == Constant.ORDER_STATUS_PROCESS) {
+			log.error("Cannot update order with status is [Process].");
+			return false;
+		}
+		
+		Order newOrder = ObjectMapperUtils.map(orderDTO, Order.class);
+		Customer customer = null;
+		
+		if (orderDTO.getCustomerId() != null) {
+			customer = customerRepository.findOneById(orderDTO.getCustomerId());
+		}
+		
+		oldItemList = orderDetailRepository.findAllByOrderId(orderID);
+		newItemList = orderDTO.getItems();
+		
+		for (int i = 0; i < newItemList.size(); i++) {
+			
+			try {
+				OrderDetailDTO itemDTO = newItemList.get(i);
+				
+				Product product = productRepository.findOneById(itemDTO.getProductId());
+				
+				Integer stockQuantity = product.getQuantity();
+				Integer changeQuantity = 0;
+				
+				//find item exist in both old and new
+				OrderDetail itemTmp = oldItemList.stream()
+						.filter(o -> o.getProduct().getId() == itemDTO.getProductId())
+						.findAny()
+						.orElse(null);
+				
+				if (itemTmp != null) {
+					oldItemList.remove(itemTmp);
+				}
+				
+				if (itemTmp != null) {
+					
+					changeQuantity = stockQuantity + itemTmp.getQuantity() - itemDTO.getQuantity();
+					
+					if (changeQuantity < 0) {
+						log.error("Product with id: [" + itemDTO.getProductId() + "] quantity out of stock.");
+						return false;
+					}
+					
+					itemDTO.setAmount(itemDTO.getQuantity() * itemTmp.getPrice());
+					
+					totalAmount += itemDTO.getAmount();
+					
+					itemTmp.setQuantity(itemDTO.getQuantity());
+					itemTmp.setAmount(itemDTO.getAmount());
+					
+					newItemListChange.add(itemTmp);
+					
+					product.setQuantity(changeQuantity);
+					
+					try {
+						log.info("Begin update product quantity: [" + product.getName() + "]");
+						productRepository.save(product);
+					} catch (Exception e) {
+						log.error("Error to update product quantity in stock...");
+						return false;
+					}
+					
+				} else {
+					
+					changeQuantity = stockQuantity - itemDTO.getQuantity();
+					
+					if (changeQuantity < 0) {
+						log.error("Product with id: [" + itemDTO.getProductId() + "] quantity out of stock.");
+						return false;
+					}
+					
+					itemDTO.setUnit(product.getUnit());
+					itemDTO.setPrice(product.getPrice());
+					itemDTO.setAmount(itemDTO.getQuantity() * itemDTO.getPrice());
+					
+					totalAmount += itemDTO.getAmount();
+					
+					OrderDetail orderDetail = ObjectMapperUtils.map(itemDTO, OrderDetail.class);
+					orderDetail.setOrder(oldOrder);
+					orderDetail.setProduct(product);
+					
+					newItemListChange.add(orderDetail);
+					
+					product.setQuantity(changeQuantity);
+					
+					try {
+						log.info("Begin update product quantity: [" + product.getName() + "]");
+						productRepository.save(product);
+					} catch (Exception e) {
+						log.error("Error to update product quantity in stock...");
+						return false;
+					}
+				}
+				
+				//return product quantity if edited order remove item in old order
+				if (i == (newItemList.size() - 1)) {
+					for (OrderDetail item : oldItemList) {
+						Product productTmp = productRepository.findOneById(item.getProduct().getId());
+						
+						Integer stockQuantityTmp = productTmp.getQuantity();
+						
+						productTmp.setQuantity(stockQuantityTmp + item.getQuantity());
+						
+						try {
+							log.info("Begin update product quantity: [" + product.getName() + "]");
+							productRepository.save(product);
+						} catch (Exception e) {
+							log.error("Error to update product quantity in stock...");
+							return false;
+						}
+					}
+				}
+				
+			} catch (Exception e) {
+				log.error("------ Product information had been changed...");
+				return false;
+			}
+		}
+		
+		newOrder.setId(orderID);
+		newOrder.setItems(newItemListChange);
+		newOrder.setAmount(totalAmount);
+		
+		if (customer != null) {
+			newOrder.setCustomer(customer);
+		}
+		
+		try {
+			orderRepository.save(newOrder);
+		} catch (Exception e) {
+			log.error("Error to save order...");
+			return false;
+		}
+		
+		for (OrderDetail item : newItemListChange) {
+			try {
+				orderDetailRepository.save(item);
+			} catch (Exception e) {
+				log.error("Error to save item in order...");
+				return false;
+			}
+		}
+		
+		for (OrderDetail item : oldItemList) {
+			try {
+				orderDetailRepository.delete(item);
+			} catch (Exception e) {
+				log.error("Error to delete item in order...");
+				return false;
+			}
+		}
+		
+		log.info("######## End update Order ########");
+		
+		return true;
 	}
 
 	@Override
@@ -203,6 +373,78 @@ public class OrderServiceImpl implements OrderService {
 		}
 		
 		return orderDTO;
+	}
+
+	@Override
+	public List<OrderDTO> search(String keyword, int pageNo, int pageSize) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer countByKeyword(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Boolean delete(Integer id) {
+		log.info("######## Begin delete Order ########");
+		
+		Order order = orderRepository.findOneById(id);
+		
+		if (order == null) {
+			log.error("Order with id: [" + id + "] not exist.");
+			return false;
+		}
+		
+		if (order.getStatus() == Constant.ORDER_STATUS_PROCESS) {
+			log.error("Cannot update order with status is [Process].");
+			return false;
+		}
+		
+		List<OrderDetail> itemList = orderDetailRepository.findAllByOrderId(order.getId());
+		
+		for (OrderDetail item : itemList) {
+			try {
+				Product product = productRepository.findOneById(item.getProduct().getId());
+				
+				Integer changeQuantity = product.getQuantity() + item.getQuantity();
+				
+				product.setQuantity(changeQuantity);
+				
+				try {
+					log.info("Begin update product quantity: [" + product.getName() + "]");
+					productRepository.save(product);
+				} catch (Exception e) {
+					log.error("Error to update product quantity in stock...");
+					return false;
+				}
+				
+			} catch (Exception e) {
+				log.error("------ Product information had been changed...");
+				return false;
+			}
+			
+			try {
+				orderDetailRepository.deleteById(item.getId());
+			} catch (Exception e) {
+				log.error("Error to remove item [" + item.getId() + "] in order");
+				return false;
+			}
+		}
+		
+		try {
+			orderRepository.deleteById(id);
+		} catch (Exception e) {
+			log.error("Error to remove order with id: [" + id + "]");
+			return false;
+		}
+		
+		log.info("######## End delete Order ########");
+		
+		return true;
 	}
 
 }

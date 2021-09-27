@@ -59,13 +59,13 @@
 			    		<div class="col-md-3 fw-bold" th:text="'Quantity: ' + ${item.quantity}"></div>
 			    		<div class="col-md-3 row">
 			    			<div class="col-md-4">
-			    				<a th:text="'-'" th:href="@{/orders/reduce-item/1/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
+			    				<a th:text="'-'" th:href="@{/orders/reduce-item/1/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
 			    			</div>
 			    			<div class="col-md-4">
-			    				<a th:text="'+'" th:href="@{/orders/add-item/1/{id}(id=${item.id})}" class="btn btn-primary fw-bold btnCustomTh1" />
+			    				<a th:text="'+'" th:href="@{/orders/add-item/1/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
 			    			</div>
 			    			<div class="col-md-4">
-			    				<a th:text="'x'" th:href="@{/orders/remove-item/1/{id}(id=${item.id})}" class="btn btn-danger fw-bold btnCustomTh1" />
+			    				<a th:text="'x'" th:href="@{/orders/remove-item/1/{id}(id=${item.productId})}" class="btn btn-danger fw-bold btnCustomTh1" />
 			    			</div>
 			    		</div>
 			    		<div>&nbsp;</div>

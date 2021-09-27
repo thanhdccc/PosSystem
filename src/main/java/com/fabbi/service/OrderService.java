@@ -14,5 +14,11 @@ public interface OrderService {
 	
 	List<OrderDTO> findPaginated(int pageNo, int pageSize);
 	
+	List<OrderDTO> search(String keyword, int pageNo, int pageSize);
+	
 	Integer count();
+	
+	Integer countByKeyword(String keyword);
+	
+	Boolean delete(Integer id);
 }

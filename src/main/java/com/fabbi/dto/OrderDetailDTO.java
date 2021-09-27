@@ -1,6 +1,7 @@
 package com.fabbi.dto;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -35,4 +36,13 @@ public class OrderDetailDTO {
 	private Integer amount;
 
 	private Integer unit;
+	
+	@Transient
+	public String getThumbnailImagePath() {
+		if (thumbnail == null) {
+			return null;
+		}
+		
+		return "/product-images/" + thumbnail;
+	}
 }
