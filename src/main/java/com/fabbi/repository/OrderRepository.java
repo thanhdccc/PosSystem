@@ -22,4 +22,14 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	
 	@Query("SELECT COUNT(o.id) FROM Order o WHERE o.status = :keyword")
 	Integer countByKeyword(@Param("keyword") Integer keyword);
+	
+//	@Query("SELECT new com.fabbi.dto.OrderDTO(o.id, o.status, o.amount, c.id, c.name) "
+//			+ "FROM Order o INNER JOIN Customer c ON o.customer_Id = c.id "
+//			+ "WHERE c.name LIKE %:keyword%")
+//	List<OrderDTO> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+//	
+//	@Query(value = "SELECT COUNT(*) "
+//			+ "FROM orders o INNER JOIN customer c ON o.customer_id = c.id "
+//			+ "WHERE c.name LIKE %:keyword%", nativeQuery = true)
+//	Integer countByKeyword(@Param("keyword") String keyword);
 }
