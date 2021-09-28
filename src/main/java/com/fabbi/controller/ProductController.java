@@ -69,8 +69,8 @@ public class ProductController {
 	
 	@PostMapping("/products/add-product")
 	public String addProduct(@Valid ProductDTO productDTO
-			, @RequestParam("thumbnailImage") MultipartFile multipartFile
 			, BindingResult bindingResult
+			, @RequestParam("thumbnailImage") MultipartFile multipartFile
 			, RedirectAttributes redirectAttributes) throws IOException {
 		
 		String name = productDTO.getName();
@@ -151,8 +151,8 @@ public class ProductController {
 	
 	@PostMapping("/products/edit-product")
 	public String updateProduct(@Valid ProductDTO productDTO
-			, @RequestParam("thumbnailImage") MultipartFile multipartFile
 			, BindingResult bindingResult
+			, @RequestParam("thumbnailImage") MultipartFile multipartFile
 			, RedirectAttributes redirectAttributes) throws IOException {
 		
 		String name = productDTO.getName();

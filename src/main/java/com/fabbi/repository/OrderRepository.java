@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.fabbi.dto.ReportTotalMoneyDTO;
 import com.fabbi.entity.Order;
 
 @Repository
@@ -23,13 +24,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	@Query("SELECT COUNT(o.id) FROM Order o WHERE o.status = :keyword")
 	Integer countByKeyword(@Param("keyword") Integer keyword);
 	
-//	@Query("SELECT new com.fabbi.dto.OrderDTO(o.id, o.status, o.amount, c.id, c.name) "
-//			+ "FROM Order o INNER JOIN Customer c ON o.customer_Id = c.id "
-//			+ "WHERE c.name LIKE %:keyword%")
-//	List<OrderDTO> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
-//	
-//	@Query(value = "SELECT COUNT(*) "
-//			+ "FROM orders o INNER JOIN customer c ON o.customer_id = c.id "
-//			+ "WHERE c.name LIKE %:keyword%", nativeQuery = true)
-//	Integer countByKeyword(@Param("keyword") String keyword);
+	@Query(name = "find_total_amount", nativeQuery = true)
+	List<ReportTotalMoneyDTO> getTotalMoney();
+	
+	@Query(name = "find_total_amount_by_date", nativeQuery = true)
+	ReportTotalMoneyDTO getTotalMoneyByDate(@Param("searchDate") String searchDate);
 }

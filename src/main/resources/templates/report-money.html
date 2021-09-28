@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Report</title>
+</head>
+<body>
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+	<div id="home-main-content">
+	
+		<div th:if="${searchText != null}">
+			<label>Total Money</label>
+			<h1 th:text="${resultListSearch.total}"></h1>
+			<br/>
+			<label>Date</label>
+			<h1 th:text="${#dates.format(resultListSearch.date, 'yyyy-MM-dd')}"></h1>
+		</div>
+	
+		<div th:unless="${searchText != null}">
+		
+			<div style="width: 400px; float: right;">
+				<form th:action="@{/reports/total-money/search}" method="GET">
+				  	<div class="input-group">
+				  		<input id="searchDate" type="date" name="searchDate" class="form-control rounded" 
+				  		placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+				  		<button class="btn btn-outline-primary" type="submit">Search</button>
+				  	</div>
+			  	</form>
+			  	<div>&nbsp;</div>
+			</div>
+			
+		    <table class="table table-striped table-hover">
+		    	<thead class="table-dark">
+		    		<tr>
+				        <td scope="col">Total Money</td>
+				        <td scope="col">Date</td>
+				    </tr>
+		    	</thead>
+		      	<tbody>
+		      		<tr th:each="result : ${resultList}">
+		      			<th th:text="${result.total}"></th>
+				        <td th:text="${#dates.format(result.date, 'yyyy-MM-dd')}"></td>
+				    </tr>
+		      	</tbody>
+		    </table>
+	    </div>
+	    
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

@@ -37,10 +37,6 @@
 						<input type="number" name="price" class="form-control" th:field="*{price}" id="price"  th:value="*{price}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="invalid-feedback"></div>
 					</div>
-					<div class="form-row py-1">
-						<label for="thumbnail" class="form-label">Thumbnail</label>
-						<input type="file" name="thumbnailImage" class="form-control" accept="image/png, image/jpeg" />
-					</div>
 					<div class="form-row py-1" th:if="${productDTO.unit == 0}">
 						<label for="unit" class="form-label">Unit</label>
 						<select class="form-control" th:field="*{unit}">
@@ -78,6 +74,10 @@
 						<label for="note" class="form-label">Note</label>
 						<input type="text" name="note" class="form-control" th:field="*{note}" id="note" th:value="*{note}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="thumbnail" class="form-label">Thumbnail</label>
+						<input type="file" name="thumbnailImage" class="form-control" accept="image/png, image/jpeg" />
 					</div>
 					<div class="form-row py-1">
 						<button type="submit" class="btn btn-primary">Submit</button>
