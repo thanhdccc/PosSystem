@@ -37,18 +37,20 @@
 			    	<div>&nbsp;</div>
 			    	<div class="row" th:if="${session.containsKey('orderSessionCreate')}" th:each="item : ${session.orderSessionCreate}">
 			    		<div class="col-md-3">
-			    			<img style="height: 100px;" class="card-img-top" th:src="@{${item.thumbnailImagePath}}">
+			    			<img style="height: 80px;" class="card-img-top" th:src="@{${item.thumbnailImagePath}}">
 			    		</div>
-			    		<div class="col-md-3 fw-bold" th:text="${item.name}"></div>
-			    		<div class="col-md-3 fw-bold" th:text="'Quantity: ' + ${item.quantity}"></div>
+			    		<div class="col-sm-2 fw-bold" th:text="'Name: ' + ${item.name}"></div>
+			    		<div class="col-sm-2" th:text="'Quantity: ' + ${item.quantity}"></div>
+			    		<div class="col-sm-2" th:text="'Price: ' + ${item.price}"></div>
+			    		<div class="col-sm-2" th:text="'Amount: ' + ${item.amount}"></div>
 			    		<div class="col-md-3 row">
-			    			<div class="col-md-4">
+			    			<div class="col-sm-4">
 			    				<a th:text="'-'" th:href="@{/orders/reduce-item/0/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
 			    			</div>
-			    			<div class="col-md-4">
+			    			<div class="col-sm-4">
 			    				<a th:text="'+'" th:href="@{/orders/add-item/0/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
 			    			</div>
-			    			<div class="col-md-4">
+			    			<div class="col-sm-4">
 			    				<a th:text="'x'" th:href="@{/orders/remove-item/0/{id}(id=${item.productId})}" class="btn btn-danger fw-bold btnCustomTh1" />
 			    			</div>
 			    		</div>
@@ -62,25 +64,94 @@
 		  	</div>
 		  	
 		  	<div class="col-sm-8">
-		  		<h1 style="text-align: center;">Product</h1>
+		  		<div>
+		  			<div style="float: right;">
+					  	<form th:action="@{/orders/add-order/1}" method="GET">
+						  	<div class="input-group">
+						  		<input id="txtSearch" type="text" name="keyword" class="form-control rounded" 
+						  		placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+						  		<button class="btn btn-outline-primary" type="submit">Search</button>
+						  	</div>
+					  	</form>
+					</div>
+			  		<h1 style="text-align: center;">Product</h1>
+			  		<div>&nbsp;</div>
+			  		<div class="row">
+			  			<div th:each="product : ${productList}" class="col-12 col-md-6 col-lg-2">
+			  				<div class="card">
+			  					<img style="height: 100px;" class="card-img-top" th:src="@{${product.thumbnailImagePath}}">
+			  					<div class="card-body">
+			  						<p class="card-text text-center fs-5" th:text="${product.name}"></p>
+			  						<div class="row">
+			  							<div class="col">
+			  								<p class="card-text text-center fs-6" th:text="'Price: ' + ${product.price}"></p>
+			  							</div>
+			  							<div class="col text-center">
+			  								<a th:href="@{/orders/add-item/0/{id}(id=${product.id})}" class="btn btn-success">Add</a>
+			  							</div>
+			  						</div>
+			  					</div>
+			  				</div>
+			  			</div>
+			  		</div>
+		  		</div>
 		  		<div>&nbsp;</div>
-		  		<div class="row">
-		  			<div th:each="product : ${productList}" class="col-12 col-md-6 col-lg-2">
-		  				<div class="card">
-		  					<img style="height: 100px;" class="card-img-top" th:src="@{${product.thumbnailImagePath}}">
-		  					<div class="card-body">
-		  						<p class="card-text text-center fs-5" th:text="${product.name}"></p>
-		  						<div class="row">
-		  							<div class="col">
-		  								<p class="card-text text-center fs-6" th:text="'Price: ' + ${product.price}"></p>
-		  							</div>
-		  							<div class="col text-center">
-		  								<a th:href="@{/orders/add-item/0/{id}(id=${product.id})}" class="btn btn-success">Add</a>
-		  							</div>
-		  						</div>
-		  					</div>
-		  				</div>
-		  			</div>
+		  		
+		  		<div th:if="${keyword != null}">
+			    	<div th:if="${totalPages > 1}">
+				    	<nav>
+				    		<ul class="pagination justify-content-center">
+				    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/1' + ${'?keyword=' + keyword}}" class="page-link">First</a>
+				    			</li>
+				    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/' +  ${currentPage - 1} + ${'?keyword=' + keyword}}" class="page-link">Previous</a>
+				    			</li>
+				    			
+				    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+				    				<a class="page-link" th:href="@{'/orders/add-order/' + ${i} + ${'?keyword=' + keyword}}">[[${i}]]</a>
+				    			</li>
+				    			
+				    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/' + ${currentPage + 1} + ${'?keyword=' + keyword}}" class="page-link">Next</a>
+				    			</li>
+				    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/' + ${totalPages} + ${'?keyword=' + keyword}}" class="page-link">Last</a>
+				    			</li>	    			
+				    		</ul>
+				    	</nav>
+				    </div>
+			    </div>
+			    
+			    <div th:unless="${keyword != null}">
+			    	<div th:if="${totalPages > 1}">
+				    	<nav>
+				    		<ul class="pagination justify-content-center">
+				    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/1'}" class="page-link">First</a>
+				    			</li>
+				    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/' +  ${currentPage - 1}}" class="page-link">Previous</a>
+				    			</li>
+				    			
+				    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+				    				<a class="page-link" th:href="@{'/orders/add-order/' + ${i}}">[[${i}]]</a>
+				    			</li>
+				    			
+				    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/' + ${currentPage + 1}}" class="page-link">Next</a>
+				    			</li>
+				    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+				    				<a th:href="@{'/orders/add-order/' + ${totalPages}}" class="page-link">Last</a>
+				    			</li>	    			
+				    		</ul>
+				    	</nav>
+				    </div>
+			    </div>
+		  		
+		  		<div>
+		  			<h1 style="text-align: center;">Customer</h1>
+			  		<div>&nbsp;</div>
 		  		</div>
 		  	</div>
 		</div>

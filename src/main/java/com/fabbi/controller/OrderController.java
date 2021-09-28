@@ -164,14 +164,52 @@ public class OrderController {
 		return "list-order";
 	}
 
-	@GetMapping("/orders/add-order")
-	public String getAddForm(@ModelAttribute OrderDTO orderDTO, Model model) {
+	@GetMapping("/orders/add-order/{pageNo}")
+	public String getAddForm(@PathVariable(value = "pageNo") int pageNo, @Param("keyword") String keyword, @ModelAttribute OrderDTO orderDTO, Model model) {
+		int pageSize = 6;
+		int tmp = 0;
+		int totalPage = 0;
 		
+		List<ProductDTO> productList = null;
+
 		List<CustomerDTO> customerList = customerService.findAll();
-		List<ProductDTO> productList = productService.findAll();
+		if (keyword != null) {
+			tmp = productService.countByKeyword(keyword);
+			
+			productList = productService.search(keyword, pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		} else {
+			tmp = productService.count();
+			
+			productList = productService.findPaginated(pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		}
+		
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", totalPage);
+		model.addAttribute("totalItems", productList.size());
+		model.addAttribute("productList", productList);
+		model.addAttribute("keyword", keyword);
 		
 		model.addAttribute("customerList", customerList);
-		model.addAttribute("productList", productList);
 		
 		return "add-order";
 	}
@@ -302,6 +340,8 @@ public class OrderController {
 			itemDTO.setProductId(productDTO.getId());
 			itemDTO.setName(productDTO.getName());
 			itemDTO.setQuantity(1);
+			itemDTO.setPrice(productDTO.getPrice());
+			itemDTO.setAmount(itemDTO.getQuantity() * itemDTO.getPrice());
 			itemDTO.setThumbnail(productDTO.getThumbnail());
 			
 			if (orderDTO != null) {
@@ -320,6 +360,7 @@ public class OrderController {
 				
 				Integer quantity = tmp.getQuantity() + 1;
 				tmp.setQuantity(quantity);
+				tmp.setAmount(quantity * tmp.getPrice());
 				
 				itemList.remove(tmp);
 				itemList.add(tmp);
@@ -330,6 +371,8 @@ public class OrderController {
 				itemDTO.setProductId(productDTO.getId());
 				itemDTO.setName(productDTO.getName());
 				itemDTO.setQuantity(1);
+				itemDTO.setPrice(productDTO.getPrice());
+				itemDTO.setAmount(itemDTO.getQuantity() * itemDTO.getPrice());
 				itemDTO.setThumbnail(productDTO.getThumbnail());
 				
 				if (orderDTO != null) {
@@ -344,7 +387,7 @@ public class OrderController {
 			session.setAttribute(sessionName, itemList);
 		}
 		
-		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order" : "redirect:/orders/edit-order/" + orderDTO.getId();
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/" + orderDTO.getId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -368,6 +411,7 @@ public class OrderController {
 			itemList.remove(tmp);
 		} else {
 			tmp.setQuantity(quantity);
+			tmp.setAmount(quantity * tmp.getPrice());
 
 			itemList.remove(tmp);
 			itemList.add(tmp);
@@ -376,7 +420,7 @@ public class OrderController {
 		session.removeAttribute(sessionName);
 		session.setAttribute(sessionName, itemList);
 		
-		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order" : "redirect:/orders/edit-order/" + orderDTO.getId();
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/" + orderDTO.getId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -399,11 +443,11 @@ public class OrderController {
 		session.removeAttribute(sessionName);
 		session.setAttribute(sessionName, itemList);
 		
-		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order" : "redirect:/orders/edit-order/" + orderDTO.getId();
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/" + orderDTO.getId();
 	}
 	
 	@GetMapping("/orders/delete-order/{id}")
-	public String deleteCustomer(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+	public String deleteOrder(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 		
 		UserDetails userDetail = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
