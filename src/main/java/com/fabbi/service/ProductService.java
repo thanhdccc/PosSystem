@@ -28,6 +28,8 @@ public interface ProductService {
 	
 	List<ProductDTO> findPaginated(int pageNo, int pageSize);
 	
+	List<ProductDTO> findAll();
+	
 	List<ProductDTO> search(String keyword, int pageNo, int pageSize);
 	
 	Integer count();

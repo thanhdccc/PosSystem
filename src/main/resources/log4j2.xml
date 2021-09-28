@@ -2,7 +2,7 @@
 <Configuration>
 	<Properties>
         <Property name="patternLayout">%d{yyyy-MM-dd HH:mm:ss a} %-5level [%t] %logger{36}.%M : %msg%n</Property>
-        <Property name="logPath">D:\logs\posSale</Property>
+        <Property name="logPath">D:\logs\PosSystem</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
