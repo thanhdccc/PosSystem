@@ -36,32 +36,31 @@
 						<div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="invalid-feedback"></div>
 					</div>
 					<div class="form-row py-1">
-						<label for="thumbnail" class="form-label">Thumbnail</label>
-						<input type="file" name="thumbnailImage" class="form-control" accept="image/png, image/jpeg" />
-					</div>
-					<div class="form-row py-1">
 						<label for="unit" class="form-label">Unit</label>
-						<select class="form-control" th:field="*{unit}">
+						<select class="form-control" th:field="*{unit}" th:errorClass="is-invalid">
 							<option value=""></option>
 						    <option th:value="0" th:text="Kilogram"></option>
 						    <option th:value="1" th:text="Piece"></option>
 						</select>
+						<div th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}" class="invalid-feedback"></div>
 					</div>
 					<div class="form-row py-1">
 						<label for="supplierId" class="form-label">Supplier</label>
-						<select class="form-control" th:field="*{supplierId}">
+						<select class="form-control" th:field="*{supplierId}" th:errorClass="is-invalid">
 						    <option value=""></option>
 						    <option th:each="supplier : ${supplierList}"
 						    	th:value="${supplier.id}" th:text="${supplier.name}" />
 						</select>
+						<div th:if="${#fields.hasErrors('supplierId')}" th:errors="*{supplierId}" class="invalid-feedback"></div>
 					</div>
 					<div class="form-row py-1">
 						<label for="categoryId" class="form-label">Category</label>
-						<select class="form-control" th:field="*{categoryId}">
+						<select class="form-control" th:field="*{categoryId}" th:errorClass="is-invalid">
 						    <option value=""></option>
 						    <option th:each="category : ${categoryList}"
 						    	th:value="${category.id}" th:text="${category.name}" />
 						</select>
+						<div th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}" class="invalid-feedback"></div>
 					</div>
 					<div class="form-row py-1">
 						<label for="description" class="form-label">Description</label>
@@ -72,6 +71,10 @@
 						<label for="note" class="form-label">Note</label>
 						<input type="text" name="note" class="form-control" id="note" th:value="*{note}" th:errorClass="is-invalid">
 						<div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="thumbnail" class="form-label">Thumbnail</label>
+						<input type="file" name="thumbnailImage" class="form-control" accept="image/png, image/jpeg" />
 					</div>
 					<div class="form-row py-1">
 						<button type="submit" class="btn btn-primary">Submit</button>
