@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fabbi.constant.Constant;
 import com.fabbi.dto.CustomerDTO;
+import com.fabbi.dto.OrderCustomerDTO;
 import com.fabbi.entity.Customer;
 import com.fabbi.repository.CustomerRepository;
 import com.fabbi.service.CustomerService;
@@ -183,5 +184,25 @@ public class CustomerServiceImpl implements CustomerService {
 	public List<CustomerDTO> findAll() {
 		List<Customer> customerList = customerRepository.findAll();
 		return ObjectMapperUtils.mapAll(customerList, CustomerDTO.class);
+	}
+
+	@Override
+	public Boolean addCustomerFromOrder(OrderCustomerDTO customer) {
+		log.info("######## Begin insert Customer from Order ########");
+		
+		Customer customerEntity = ObjectMapperUtils.map(customer, Customer.class);
+		
+		customerEntity.setType(Constant.CUSTOMER_TYPE_NEW);
+		customerEntity.setIsDeleted(false);
+		
+		try {
+			customerRepository.save(customerEntity);
+		} catch (Exception e) {
+			log.error("Cannot insert Customer: " + e.getMessage());
+			return false;
+		}
+		
+		log.info("######## End insert Customer from Order ########");
+		return true;
 	}
 }

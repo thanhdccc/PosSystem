@@ -64,7 +64,7 @@
 			        <td th:text="${order.amount}"></td>
 			        <td th:text="${order.numberOfItem}"></td>
 			        <td style="text-align: center;">
-			          <a th:href="@{/orders/edit-order/{id}(id=${order.id})}" class="btn btn-warning btnCustomTh">Edit</a>
+			          <a th:href="@{/orders/edit-order/1/{id}(id=${order.id})}" class="btn btn-warning btnCustomTh">Edit</a>
 			          <a th:href="@{/orders/delete-order/{id}(id=${order.id})}" class="btn btn-danger btnCustomTh">Delete</a>
 			        </td>
 			    </tr>

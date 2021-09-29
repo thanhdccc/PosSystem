@@ -35,26 +35,41 @@
 						</div>
 			    	</div>
 			    	<div>&nbsp;</div>
-			    	<div class="row" th:if="${session.containsKey('orderSessionCreate')}" th:each="item : ${session.orderSessionCreate}">
-			    		<div class="col-md-3">
-			    			<img style="height: 80px;" class="card-img-top" th:src="@{${item.thumbnailImagePath}}">
+			    	<div class="row" th:if="${session.containsKey('orderSessionCreate')}">
+			    		<div class="table-wrapper-scroll-y my-custom-scrollbar">
+			    			<table class="table table-hover">
+						    	<thead>
+						    		<tr>
+						    			<td scope="col">Thumbnail</td>
+						    			<td scope="col">Name</td>
+								        <td scope="col">Quantity</td>
+								        <td scope="col">Price</td>
+								        <td scope="col">Amount</td>
+								        <td scope="col"></td>
+								    </tr>
+						    	</thead>
+						      	<tbody>
+						      		<tr th:each="item : ${session.orderSessionCreate}">
+						      			<td>
+						      				<img style="width: 80px; height: 40px;" th:src="@{${item.thumbnailImagePath}}">
+						      			</td>
+						      			<th th:text="${item.name}"></th>
+								        <td th:text="${item.quantity}"></td>
+								        <td th:text="${item.price}"></td>
+								        <td th:text="${item.amount}"></td>
+								        <td style="text-align: center;">
+								          <a th:text="'-'" th:href="@{/orders/reduce-item/0/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
+								          <a th:text="'+'" th:href="@{/orders/add-item/0/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
+								          <a th:text="'x'" th:href="@{/orders/remove-item/0/{id}(id=${item.productId})}" class="btn btn-danger fw-bold btnCustomTh1" />
+								        </td>
+								    </tr>
+						      	</tbody>
+						    </table>
 			    		</div>
-			    		<div class="col-sm-2 fw-bold" th:text="'Name: ' + ${item.name}"></div>
-			    		<div class="col-sm-2" th:text="'Quantity: ' + ${item.quantity}"></div>
-			    		<div class="col-sm-2" th:text="'Price: ' + ${item.price}"></div>
-			    		<div class="col-sm-2" th:text="'Amount: ' + ${item.amount}"></div>
-			    		<div class="col-md-3 row">
-			    			<div class="col-sm-4">
-			    				<a th:text="'-'" th:href="@{/orders/reduce-item/0/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
-			    			</div>
-			    			<div class="col-sm-4">
-			    				<a th:text="'+'" th:href="@{/orders/add-item/0/{id}(id=${item.productId})}" class="btn btn-primary fw-bold btnCustomTh1" />
-			    			</div>
-			    			<div class="col-sm-4">
-			    				<a th:text="'x'" th:href="@{/orders/remove-item/0/{id}(id=${item.productId})}" class="btn btn-danger fw-bold btnCustomTh1" />
-			    			</div>
-			    		</div>
-			    		<div>&nbsp;</div>
+			    	</div>
+			    	<div>&nbsp;</div>
+			    	<div th:if="${session.orderTotalAmountSession != null}">
+			    		<span style="font-weight: bold;" th:text="${'Total Amount: ' + session.orderTotalAmountSession}"></span>
 			    	</div>
 			    	<div>&nbsp;</div>
 			    	<div class="form-row py-1">
@@ -151,6 +166,40 @@
 		  		
 		  		<div>
 		  			<h1 style="text-align: center;">Customer</h1>
+		  			<form id="customer_add_form">
+			  			<div class="row">
+				  			<div class="col-md-3"></div>
+				  			<div class="col">
+				  				<div class="input-group mb-3">
+									<span class="input-group-text" id="basic-addon1">@</span>
+									<input id="customer_name" type="text" class="form-control" placeholder="Name" aria-label="Name" aria-describedby="basic-addon1">
+								</div>
+								<div class="input-group mb-3">
+									<span class="input-group-text" id="basic-addon1">@</span>
+									<input id="customer_email" type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1">
+								</div>
+								<div class="input-group mb-3">
+									<span class="input-group-text" id="basic-addon1">@</span>
+									<select class="form-control" id="customer_gender">
+									    <option value="0">Male</option>
+									    <option value="1">Female</option>
+									</select>
+								</div>
+								<div class="input-group mb-3">
+									<span class="input-group-text" id="basic-addon1">@</span>
+									<input id="customer_phone" type="text" class="form-control" placeholder="Phone" aria-label="Phone" aria-describedby="basic-addon1">
+								</div>
+								<div class="input-group mb-3">
+									<span class="input-group-text" id="basic-addon1">@</span>
+									<input id="customer_address" type="text" class="form-control" placeholder="Address" aria-label="Address" aria-describedby="basic-addon1">
+								</div>
+								<div class="input-group mb-3">
+									<button onclick="validateCreateCustomer()" type="button" class="btn btn-primary" id="customer_save_btn">Save</button>
+								</div>
+				  			</div>
+				  			<div class="col-md-3"></div>
+				  		</div>
+		  			</form>
 			  		<div>&nbsp;</div>
 		  		</div>
 		  	</div>

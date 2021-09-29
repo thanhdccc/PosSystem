@@ -70,6 +70,10 @@ public class OrderController {
 			session.removeAttribute(Constant.SESSION_NAME_CREATE);
 		}
 		
+		if (session.getAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT) != null) {
+			session.removeAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT);
+		}
+		
 		List<OrderDTO> orderList = orderService.findPaginated(pageNo, pageSize);
 		
 		if (tmp < pageSize) {
@@ -215,11 +219,43 @@ public class OrderController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@GetMapping("/orders/edit-order/{id}")
-	public String getEditForm(@PathVariable Integer id, Model model, HttpSession session) {
-
-		List<CustomerDTO> customerList = customerService.findAll();
-		List<ProductDTO> productList = productService.findAll();
+	@GetMapping("/orders/edit-order/{pageNo}/{id}")
+	public String getEditForm(@PathVariable(value = "pageNo") int pageNo, @Param("keyword") String keyword, @PathVariable Integer id, Model model, HttpSession session) {
+		int pageSize = 6;
+		int tmp = 0;
+		int totalPage = 0;
+		List<ProductDTO> productList = null;
+		
+		if (keyword != null) {
+			tmp = productService.countByKeyword(keyword);
+			
+			productList = productService.search(keyword, pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		} else {
+			tmp = productService.count();
+			
+			productList = productService.findPaginated(pageNo, pageSize);
+			
+			if (tmp < pageSize) {
+				totalPage = 1;
+			} else {
+				if (tmp % pageSize == 0) {
+					totalPage = tmp / pageSize;
+				} else {
+					totalPage = (tmp / pageSize) + 1;
+				}
+			}
+		}
+		
 		List<OrderDetailDTO> itemDTOList;
 		OrderDTO orderDTO = null;
 		
@@ -230,6 +266,8 @@ public class OrderController {
 		
 		orderDTO = (OrderDTO) session.getAttribute(Constant.SESSION_ORDER_INFOR);
 		
+		CustomerDTO customerDTO = customerService.getById(orderDTO.getCustomerId());
+		
 		if (session.getAttribute(Constant.SESSION_NAME_EDIT) != null) {
 			
 			itemDTOList = (List<OrderDetailDTO>) session.getAttribute(Constant.SESSION_NAME_EDIT);
@@ -238,10 +276,26 @@ public class OrderController {
 			itemDTOList = orderDTO.getItems();
 		}
 		
+		Integer totalAmount = itemDTOList.stream().mapToInt(t -> t.getAmount()).sum();
+		
+		if (session.getAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT) != null) {
+			session.removeAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT);
+		}
+		session.setAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT, totalAmount);
+		
 		session.setAttribute(Constant.SESSION_NAME_EDIT, itemDTOList);
 
 		model.addAttribute("orderDTO", orderDTO);
-		model.addAttribute("customerList", customerList);
+		if (customerDTO != null) {
+			model.addAttribute("customerDTO", customerDTO);
+		} else {
+			model.addAttribute("customerDTO", null);
+		}
+		
+		
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", totalPage);
+		model.addAttribute("totalItems", productList.size());
 		model.addAttribute("productList", productList);
 		
 		return "edit-order";
@@ -303,6 +357,7 @@ public class OrderController {
 			OrderDTO orderDTOTmp = (OrderDTO) session.getAttribute(Constant.SESSION_ORDER_INFOR);
 			orderDTO.setId(orderDTOTmp.getId());
 			orderDTO.setItems(itemDTOList);
+			orderDTO.setCustomerId(orderDTOTmp.getCustomerId());
 			
 			Boolean result = orderService.update(orderDTO);
 			
@@ -350,20 +405,29 @@ public class OrderController {
 			
 			itemList.add(itemDTO);
 			
+			Integer totalAmount = itemList.stream().mapToInt(t -> t.getAmount()).sum();
+
+			session.setAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT, totalAmount);
 			session.setAttribute(sessionName, itemList);
 			
 		} else {
 			itemList = (List<OrderDetailDTO>) session.getAttribute(sessionName);
 			OrderDetailDTO tmp = itemList.stream().filter(o -> o.getProductId() == id).findAny().orElse(null);
 			
+			int editItemIndex = 0;
+			OrderDetailDTO editItem = null;
+			
 			if (tmp != null) {
+				editItemIndex = itemList.indexOf(tmp);
+				editItem = itemList.get(editItemIndex);
+			}
+			
+			if (editItem != null) {
 				
-				Integer quantity = tmp.getQuantity() + 1;
-				tmp.setQuantity(quantity);
-				tmp.setAmount(quantity * tmp.getPrice());
+				Integer quantity = editItem.getQuantity() + 1;
+				editItem.setQuantity(quantity);
+				editItem.setAmount(quantity * tmp.getPrice());
 				
-				itemList.remove(tmp);
-				itemList.add(tmp);
 			} else {
 				ProductDTO productDTO = productService.getById(id);
 				
@@ -383,11 +447,20 @@ public class OrderController {
 				itemList.add(itemDTO);
 			}
 			
-			session.removeAttribute(sessionName);
+			Integer totalAmount = itemList.stream().mapToInt(t -> t.getAmount()).sum();
+			
+			if (session.getAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT) != null) {
+				session.removeAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT);
+			}
+			session.setAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT, totalAmount);
+			
+			if (session.getAttribute(sessionName) != null) {
+				session.removeAttribute(sessionName);
+			}
 			session.setAttribute(sessionName, itemList);
 		}
 		
-		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/" + orderDTO.getId();
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/1/" + orderDTO.getId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -404,23 +477,37 @@ public class OrderController {
 		
 		List<OrderDetailDTO> itemList = (List<OrderDetailDTO>) session.getAttribute(sessionName);
 		OrderDetailDTO tmp = itemList.stream().filter(o -> o.getProductId() == id).findAny().orElse(null);
-
-		Integer quantity = tmp.getQuantity() - 1;
-
-		if (quantity == 0) {
-			itemList.remove(tmp);
-		} else {
-			tmp.setQuantity(quantity);
-			tmp.setAmount(quantity * tmp.getPrice());
-
-			itemList.remove(tmp);
-			itemList.add(tmp);
+		
+		int editItemIndex = 0;
+		OrderDetailDTO editItem = null;
+		
+		if (tmp != null) {
+			editItemIndex = itemList.indexOf(tmp);
+			editItem = itemList.get(editItemIndex);
 		}
 
-		session.removeAttribute(sessionName);
+		Integer quantity = editItem.getQuantity() - 1;
+
+		if (quantity == 0) {
+			itemList.remove(editItem);
+		} else {
+			editItem.setQuantity(quantity);
+			editItem.setAmount(quantity * tmp.getPrice());
+		}
+
+		Integer totalAmount = itemList.stream().mapToInt(t -> t.getAmount()).sum();
+		
+		if (session.getAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT) != null) {
+			session.removeAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT);
+		}
+		session.setAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT, totalAmount);
+		
+		if (session.getAttribute(sessionName) != null) {
+			session.removeAttribute(sessionName);
+		}
 		session.setAttribute(sessionName, itemList);
 		
-		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/" + orderDTO.getId();
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/1/" + orderDTO.getId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -439,11 +526,20 @@ public class OrderController {
 		OrderDetailDTO tmp = itemList.stream().filter(o -> o.getProductId() == id).findAny().orElse(null);
 		
 		itemList.remove(tmp);
-
-		session.removeAttribute(sessionName);
+		
+		Integer totalAmount = itemList.stream().mapToInt(t -> t.getAmount()).sum();
+		
+		if (session.getAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT) != null) {
+			session.removeAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT);
+		}
+		session.setAttribute(Constant.SESSION_ORDER_TOTAL_AMOUNT, totalAmount);
+		
+		if (session.getAttribute(sessionName) != null) {
+			session.removeAttribute(sessionName);
+		}
 		session.setAttribute(sessionName, itemList);
 		
-		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/" + orderDTO.getId();
+		return form == Constant.ORDER_FORM_CREATE ? "redirect:/orders/add-order/1" : "redirect:/orders/edit-order/1/" + orderDTO.getId();
 	}
 	
 	@GetMapping("/orders/delete-order/{id}")
