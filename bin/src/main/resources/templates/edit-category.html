@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Edit Category</title>
+</head>
+<body>
+
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+
+	<div id="home-main-content">
+		<div class="row justify-content-center align-items-center h-100">
+			<div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+				<form th:action="@{/categories/edit-category}" th:object="${categoryDTO}" method="POST">
+					<input hidden="true" th:field="*{id}">
+					<div class="form-row py-1">
+						<label for="name" class="form-label">Name</label>
+						<input type="text" name="name" class="form-control" th:field="*{name}" id="name"  th:value="*{name}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="description" class="form-label">Description</label>
+						<input type="text" name="description" class="form-control" th:field="*{description}" id="description" th:value="*{description}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

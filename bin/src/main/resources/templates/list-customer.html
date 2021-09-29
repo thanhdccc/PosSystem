@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Customer</title>
+</head>
+<body>
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+	<div id="home-main-content">
+	
+	  <div style="width: 400px; float: right;">
+	  	<form th:action="@{/customers/search/1}" method="GET">
+		  	<div class="input-group">
+		  		<input id="txtSearch" type="text" name="keyword" class="form-control rounded" 
+		  		placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+		  		<button class="btn btn-outline-primary" type="submit">Search</button>
+		  	</div>
+	  	</form>
+	  </div>
+	
+	  <div>
+	    <a href="/customers/add-customer" class="btn btn-success btnCustomTh">Add</a>
+	  </div>
+	  
+	  <div>&nbsp;</div>
+	  
+	  <div>
+	    <table class="table table-striped table-hover">
+	    	<thead class="table-dark">
+	    		<tr>
+	    			<td scope="col">ID</td>
+			        <td scope="col">Name</td>
+			        <td scope="col">Email</td>
+			        <td scope="col">DOB</td>
+			        <td scope="col">Gender</td>
+			        <td scope="col">Phone</td>
+			        <td scope="col">Address</td>
+			        <td scope="col">Type</td>
+			        <td scope="col">Note</td>
+			        <td scope="col" style="text-align: center;">Action</td>
+			    </tr>
+	    	</thead>
+	      	<tbody>
+	      		<tr th:each="customer : ${customerList}">
+	      			<th scope="row" th:text="${customer.id}"></th>
+			        <td th:text="${customer.name}"></td>
+			        <td th:text="${customer.email}"></td>
+			        <td th:text="${#dates.format(customer.dob, 'yyyy-MM-dd')}"></td>
+			        <td th:text="${customer.gender == 0 ? 'Male' : 'Female'}"></td>
+			        <td th:text="${customer.phone}"></td>
+			        <td th:text="${customer.address}"></td>
+			        <td th:text="${customer.type == 1 ? 'New' : 'Close'}"></td>
+			        <td th:text="${customer.note}"></td>
+			        <td style="text-align: center;">
+			          <a th:href="@{/customers/edit-customer/{id}(id=${customer.id})}" class="btn btn-warning btnCustomTh">Edit</a>
+			          <a th:href="@{/customers/delete-customer/{id}(id=${customer.id})}" class="btn btn-danger btnCustomTh">Delete</a>
+			        </td>
+			    </tr>
+	      	</tbody>
+	      
+	    </table>
+	    
+	    <div>&nbsp;</div>
+
+	    <div th:if="${keyword != null}">
+	    	<div th:if="${totalPages > 1}">
+		    	<nav>
+		    		<ul class="pagination justify-content-center">
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/search/1' + ${'?keyword=' + keyword}}" class="page-link">First</a>
+		    			</li>
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/search/' +  ${currentPage - 1} + ${'?keyword=' + keyword}}" class="page-link">Previous</a>
+		    			</li>
+		    			
+		    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+		    				<a class="page-link" th:href="@{'/customers/search/' + ${i} + ${'?keyword=' + keyword}}">[[${i}]]</a>
+		    			</li>
+		    			
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/search/' + ${currentPage + 1} + ${'?keyword=' + keyword}}" class="page-link">Next</a>
+		    			</li>
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/search/' + ${totalPages} + ${'?keyword=' + keyword}}" class="page-link">Last</a>
+		    			</li>	    			
+		    		</ul>
+		    	</nav>
+		    </div>
+	    </div>
+	    
+	    <div th:unless="${keyword != null}">
+	    	<div th:if="${totalPages > 1}">
+		    	<nav>
+		    		<ul class="pagination justify-content-center">
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/1'}" class="page-link">First</a>
+		    			</li>
+		    			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/' +  ${currentPage - 1}}" class="page-link">Previous</a>
+		    			</li>
+		    			
+		    			<li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+		    				<a class="page-link" th:href="@{'/customers/' + ${i}}">[[${i}]]</a>
+		    			</li>
+		    			
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/' + ${currentPage + 1}}" class="page-link">Next</a>
+		    			</li>
+		    			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    				<a th:href="@{'/customers/' + ${totalPages}}" class="page-link">Last</a>
+		    			</li>	    			
+		    		</ul>
+		    	</nav>
+		    </div>
+	    </div>
+	    
+	  </div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

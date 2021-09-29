@@ -3,16 +3,21 @@ package com.fabbi.service;
 import java.util.List;
 
 import com.fabbi.dto.CustomerDTO;
+import com.fabbi.dto.OrderCustomerDTO;
 
 public interface CustomerService {
 
 	Boolean add(CustomerDTO customer);
+	
+	Boolean addCustomerFromOrder(OrderCustomerDTO customer);
 	
 	Boolean update(CustomerDTO customer);
 	
 	Boolean delete(Integer id);
 	
 	CustomerDTO getById(Integer id);
+	
+	List<CustomerDTO> findAll();
 	
 	List<CustomerDTO> findPaginated(int pageNo, int pageSize);
 	

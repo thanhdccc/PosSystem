@@ -171,4 +171,10 @@ public class SupplierServiceImpl implements SupplierService {
 	public Integer countByKeyword(String keyword) {
 		return supplierRepository.countByKeyword(keyword);
 	}
+
+	@Override
+	public List<SupplierDTO> findAll() {
+		List<Supplier> supplierList = supplierRepository.findAll();
+		return ObjectMapperUtils.mapAll(supplierList, SupplierDTO.class);
+	}
 }

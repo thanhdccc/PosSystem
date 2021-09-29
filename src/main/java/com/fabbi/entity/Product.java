@@ -29,13 +29,13 @@ public class Product extends Base {
 	private Integer quantity;
 	
 	@Column
-	private Float price;
+	private Integer price;
 	
 	@Column
 	private String thumbnail;
 	
 	@Column
-	private String unit;
+	private Integer unit;
 	
 	@Column(columnDefinition = "TEXT")
 	private String description;

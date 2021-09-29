@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fabbi.dto.CategoryDTO;
 import com.fabbi.entity.Category;
 import com.fabbi.repository.CategoryRepository;
-import com.fabbi.repository.ProductRepository;
 import com.fabbi.service.CategoryService;
 import com.fabbi.util.ObjectMapperUtils;
 
@@ -24,9 +23,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
-	@Autowired
-	private ProductRepository productRepository;
 	
 	@Override
 	public Boolean add(CategoryDTO categoryDTO) {
@@ -83,9 +79,8 @@ public class CategoryServiceImpl implements CategoryService {
 			return null;
 		}
 		
-		Integer numberOfProduct = productRepository.countByCategoryId(id);
 		CategoryDTO categoryDTO = ObjectMapperUtils.map(category, CategoryDTO.class);
-		categoryDTO.setNumberOfProduct(numberOfProduct);
+		categoryDTO.setNumberOfProduct(category.getProducts().size());
 		
 		log.info("######## End get Category by ID ########");
 		return categoryDTO;
@@ -100,9 +95,12 @@ public class CategoryServiceImpl implements CategoryService {
 		List<Category> categoryList = categoryRepository.findAllBy(pageable);
 		List<CategoryDTO> categoryDTOList = ObjectMapperUtils.mapAll(categoryList, CategoryDTO.class);
 		
-		for (CategoryDTO item : categoryDTOList) {
-			Integer numberOfProduct = productRepository.countByCategoryId(item.getId());
-			item.setNumberOfProduct(numberOfProduct);
+		for (CategoryDTO itemDTO : categoryDTOList) {
+			for (Category item : categoryList) {
+				if (itemDTO.getId() == item.getId()) {
+					itemDTO.setNumberOfProduct(item.getProducts().size());
+				}
+			}
 		}
 		
 		log.info("######## End get all Category ########");
@@ -120,7 +118,7 @@ public class CategoryServiceImpl implements CategoryService {
 			return false;
 		}
 		
-		if (productRepository.countByCategoryId(id) >= 1) {
+		if (category.getProducts().size() >= 1) {
 			log.error("Delete category with id: [" + id + "] failed because there is product belong to.");
 			return false;
 		}
@@ -145,9 +143,12 @@ public class CategoryServiceImpl implements CategoryService {
 		List<Category> categoryList = categoryRepository.findByName(name, pageable);
 		List<CategoryDTO> categoryDTOList = ObjectMapperUtils.mapAll(categoryList, CategoryDTO.class);
 		
-		for (CategoryDTO item : categoryDTOList) {
-			Integer numberOfProduct = productRepository.countByCategoryId(item.getId());
-			item.setNumberOfProduct(numberOfProduct);
+		for (CategoryDTO itemDTO : categoryDTOList) {
+			for (Category item : categoryList) {
+				if (itemDTO.getId() == item.getId()) {
+					itemDTO.setNumberOfProduct(item.getProducts().size());
+				}
+			}
 		}
 		
 		log.info("######## End get all Category by name: [" + name + "] ########");
@@ -172,5 +173,11 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public Integer countByName(String name) {
 		return categoryRepository.countByName(name);
+	}
+
+	@Override
+	public List<CategoryDTO> findAll() {
+		List<Category> categoryList = categoryRepository.findAll();
+		return ObjectMapperUtils.mapAll(categoryList, CategoryDTO.class);
 	}
 }

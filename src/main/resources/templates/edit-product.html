@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<!--  main-fragment (title, otherStaticResources, header, nav, mainContent, footer)  -->
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main-layout :: main-fragment(
+                                                ~{::title},
+                                                ~{:: #home-static-resources},
+                                                ~{:: #home-sidebar},
+                                                ~{:: #home-nav},
+                                                ~{:: #home-main-content},
+                                                ~{:: #home-footer}
+                                               )}">
+<head id="home-static-resources" th:include="/fragments/app-fragments :: static-resource">
+	<title id="pageTitle">Edit Product</title>
+</head>
+<body>
+
+	<div id="home-nav" th:replace="~{/fragments/app-fragments :: nav-default}"></div>
+	<div id="home-sidebar" th:replace="~{/fragments/app-fragments :: main-sidebar}"></div>
+
+	<div id="home-main-content">
+		<div class="row justify-content-center align-items-center h-100">
+			<div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+				<form th:action="@{/products/edit-product}" th:object="${productDTO}" method="POST" enctype="multipart/form-data">
+					<input hidden="true" th:field="*{id}">
+					<div class="form-row py-1">
+						<label for="name" class="form-label">Name</label>
+						<input type="text" name="name" class="form-control" th:field="*{name}" id="name"  th:value="*{name}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="quantity" class="form-label">Quantity</label>
+						<input type="number" name="quantity" class="form-control" th:field="*{quantity}" id="quantity"  th:value="*{quantity}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="price" class="form-label">Price</label>
+						<input type="number" name="price" class="form-control" th:field="*{price}" id="price"  th:value="*{price}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1" th:if="${productDTO.unit == 0}">
+						<label for="unit" class="form-label">Unit</label>
+						<select class="form-control" th:field="*{unit}">
+						    <option th:value="0" th:text="Kilogram" selected="selected"></option>
+						    <option th:value="1" th:text="Piece"></option>
+						</select>
+					</div>
+					<div class="form-row py-1" th:if="${productDTO.unit == 1}">
+						<label for="unit" class="form-label">Unit</label>
+						<select class="form-control" th:field="*{unit}">
+						    <option th:value="0" th:text="Kilogram"></option>
+						    <option th:value="1" th:text="Piece" selected="selected"></option>
+						</select>
+					</div>
+					<div class="form-row py-1">
+						<label for="unit" class="form-label">Supplier</label>
+						<select class="form-control" th:field="*{supplierId}">
+						    <option th:each="supplier : ${supplierList}"
+						    	th:value="${supplier.id}" th:text="${supplier.name}" th:selected="${supplier.id == supplierId}" />
+						</select>
+					</div>
+					<div class="form-row py-1">
+						<label for="unit" class="form-label">Category</label>
+						<select class="form-control" th:field="*{categoryId}">
+						    <option th:each="category : ${categoryList}"
+						    	th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == categoryId}" />
+						</select>
+					</div>
+					<div class="form-row py-1">
+						<label for="description" class="form-label">Description</label>
+						<input type="text" name="description" class="form-control" th:field="*{description}" id="description" th:value="*{description}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="note" class="form-label">Note</label>
+						<input type="text" name="note" class="form-control" th:field="*{note}" id="note" th:value="*{note}" th:errorClass="is-invalid">
+						<div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-row py-1">
+						<label for="thumbnail" class="form-label">Thumbnail</label>
+						<input type="file" name="thumbnailImage" class="form-control" accept="image/png, image/jpeg" />
+					</div>
+					<div class="form-row py-1">
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
+
+</body>
+</html>

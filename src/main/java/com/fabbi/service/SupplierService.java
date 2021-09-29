@@ -18,6 +18,8 @@ public interface SupplierService {
 	
 	List<SupplierDTO> search(String keyword, int pageNo, int pageSize);
 	
+	List<SupplierDTO> findAll();
+	
 	Boolean isExistByEmail(String email);
 	
 	Boolean isExistByPhone(String phone);

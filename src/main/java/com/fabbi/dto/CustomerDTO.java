@@ -41,7 +41,7 @@ public class CustomerDTO {
 
 	private String address;
 	
-	@Pattern(regexp = "(^$|^.*@.*\\..*$)", message = "Email in not correct format")
+	@Pattern(regexp = "(^$|^.*@.*\\..*$)", message = "Email is wrong format")
 	private String email;
 
 	private Integer type;
