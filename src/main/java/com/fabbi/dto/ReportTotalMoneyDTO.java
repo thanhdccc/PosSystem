@@ -12,6 +12,8 @@ public class ReportTotalMoneyDTO {
 	private Integer total;
 
 	private Date date;
+	
+	private String strDate;
 
 	public ReportTotalMoneyDTO(Integer total, Date date) {
 		this.total = total;

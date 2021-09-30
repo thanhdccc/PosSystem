@@ -14,6 +14,8 @@ import com.fabbi.entity.Customer;
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	
 	Customer findOneById(Integer id);
+	
+	Customer findOneByPhone(String phone);
 
 	Boolean existsByEmail(String email);
     

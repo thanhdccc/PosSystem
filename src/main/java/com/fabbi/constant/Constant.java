@@ -33,7 +33,14 @@ public final class Constant {
 	public static final String SESSION_NAME_EDIT = "orderSessionEdit";
 	public static final String SESSION_ORDER_INFOR = "orderInforSession";
 	public static final String SESSION_ORDER_TOTAL_AMOUNT = "orderTotalAmountSession";
+	public static final String SESSION_CUSTOMER_INFOR = "customerInforSession";
 	
 	public static final int ORDER_FORM_CREATE = 0;
 	public static final int ORDER_FORM_EDIT = 1;
+	
+	public static final String EXPORT_EXCEL_HEADER_NAME = "Content-Disposition";
+	public static final String EXPORT_EXCEL_HEADER_VALUE_TOTAL_MONEY = "attachment; filename=report_total_money.xlsx";
+	public static final String EXPORT_EXCEL_HEADER_VALUE_PRODUCT = "attachment; filename=report_best_sold_product.xlsx";
+	public static final String EXPORT_EXCEL_HEADER_VALUE_TOTAL_MONEY_PDF = "attachment; filename=report_total_money.pdf";
+	public static final String EXPORT_EXCEL_HEADER_VALUE_PRODUCT_PDF = "attachment; filename=report_best_sold_product.pdf";
 }

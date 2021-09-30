@@ -1,5 +1,6 @@
 package com.fabbi.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ReportTotalMoneyDTO> reportTotalMoney() {
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		List<ReportTotalMoneyDTO> resultDTO = null;
 		
 		log.info("######## Begin get report category ########");
@@ -42,6 +45,8 @@ public class ReportServiceImpl implements ReportService {
 			log.error("Error to get report.....");
 			return null;
 		}
+		
+		resultDTO.forEach(r -> r.setStrDate(dateFormat.format(r.getDate())));
 		
 		log.info("######## End get report category ########");
 		

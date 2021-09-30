@@ -6,13 +6,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReportBestSoldDTO {
+	
+	private String name;
 
 	private Integer total;
 
-	private String name;
-
-	public ReportBestSoldDTO(Integer total, String name) {
-		this.total = total;
+	public ReportBestSoldDTO(String name, Integer total) {
 		this.name = name;
+		this.total = total;
 	}
 }

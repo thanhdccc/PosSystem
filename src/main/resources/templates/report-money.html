@@ -28,6 +28,10 @@
 	
 		<div th:unless="${searchText != null}">
 		
+			<div id="chart_div"></div>
+			
+			<div>&nbsp;</div>
+			
 			<div style="width: 400px; float: right;">
 				<form th:action="@{/reports/total-money/search}" method="GET">
 				  	<div class="input-group">
@@ -53,8 +57,16 @@
 				    </tr>
 		      	</tbody>
 		    </table>
+		    <div>&nbsp;</div>
+		    <div style="float: right;">
+		    	<a th:href="@{/reports/total-money/export-excel}" class="btn btn-success btnCustomExport">
+		    		Export to Excel
+		    	</a>
+		    	<a th:href="@{/reports/total-money/export-pdf}" class="btn btn-success btnCustomExport">
+		    		Export to PDF
+		    	</a>
+		    </div>
 	    </div>
-	    
 	</div>
 	<div id="home-footer" th:replace="~{/fragments/app-fragments :: copyright}"></div>
 

@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @NamedNativeQuery(
 		name = "find_best_sold",
-		query = "SELECT SUM(od.quantity) AS 'total', p.name AS 'name' "
+		query = "SELECT p.name AS 'name', SUM(od.quantity) AS 'total' "
 				+ "FROM order_detail od INNER JOIN product p ON od.product_id = p.id "
 				+ "GROUP BY od.product_id "
 				+ "ORDER BY SUM(od.quantity) DESC",
@@ -34,8 +34,8 @@ import lombok.Setter;
 		classes = @ConstructorResult(
 				targetClass = ReportBestSoldDTO.class,
 				columns = {
-						@ColumnResult(name = "total", type = Integer.class),
-						@ColumnResult(name = "name", type = String.class)
+						@ColumnResult(name = "name", type = String.class),
+						@ColumnResult(name = "total", type = Integer.class)
 				}
 		)
 )

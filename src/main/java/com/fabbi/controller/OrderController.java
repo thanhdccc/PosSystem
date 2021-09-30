@@ -176,7 +176,6 @@ public class OrderController {
 		
 		List<ProductDTO> productList = null;
 
-		List<CustomerDTO> customerList = customerService.findAll();
 		if (keyword != null) {
 			tmp = productService.countByKeyword(keyword);
 			
@@ -212,8 +211,6 @@ public class OrderController {
 		model.addAttribute("totalItems", productList.size());
 		model.addAttribute("productList", productList);
 		model.addAttribute("keyword", keyword);
-		
-		model.addAttribute("customerList", customerList);
 		
 		return "add-order";
 	}
@@ -319,6 +316,12 @@ public class OrderController {
 			redirectAttributes.addFlashAttribute("messageFail", "Failed to saved.");
 		} else {
 			
+			CustomerDTO customer = (CustomerDTO) session.getAttribute(Constant.SESSION_CUSTOMER_INFOR);
+			
+			if (customer != null) {
+				orderDTO.setCustomerId(customer.getId());
+			}
+			
 			orderDTO.setItems(itemList);
 			
 			Boolean result = orderService.add(orderDTO);
@@ -328,6 +331,7 @@ public class OrderController {
 				redirectAttributes.addFlashAttribute("messageFail", "Failed to saved.");
 			} else {
 				session.removeAttribute(Constant.SESSION_NAME_CREATE);
+				session.removeAttribute(Constant.SESSION_CUSTOMER_INFOR);
 				
 				redirectAttributes.addFlashAttribute("messageSuccess", "Saved successfully.");
 			}

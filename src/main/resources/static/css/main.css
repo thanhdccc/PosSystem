@@ -4,6 +4,12 @@
 	text-align: center;
 }
 
+.btnCustomExport {
+	height: 40px;
+	width: 150px;
+	text-align: center;
+}
+
 .btnCustomTh1 {
 	height: 40%;
 	width: 36px;

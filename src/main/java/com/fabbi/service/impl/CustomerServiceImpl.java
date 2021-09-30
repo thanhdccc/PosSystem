@@ -187,7 +187,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Boolean addCustomerFromOrder(OrderCustomerDTO customer) {
+	public CustomerDTO addCustomerFromOrder(OrderCustomerDTO customer) {
 		log.info("######## Begin insert Customer from Order ########");
 		
 		Customer customerEntity = ObjectMapperUtils.map(customer, Customer.class);
@@ -195,14 +195,40 @@ public class CustomerServiceImpl implements CustomerService {
 		customerEntity.setType(Constant.CUSTOMER_TYPE_NEW);
 		customerEntity.setIsDeleted(false);
 		
+		Customer savedCustomer = null;
+		
 		try {
-			customerRepository.save(customerEntity);
+			savedCustomer = customerRepository.save(customerEntity);
 		} catch (Exception e) {
 			log.error("Cannot insert Customer: " + e.getMessage());
-			return false;
+			return null;
 		}
 		
+		if (savedCustomer == null) {
+			log.error("Saved failed");
+			return null;
+		}
+		
+		CustomerDTO result = ObjectMapperUtils.map(savedCustomer, CustomerDTO.class);
+		
 		log.info("######## End insert Customer from Order ########");
-		return true;
+		return result;
+	}
+
+	@Override
+	public CustomerDTO getByPhone(String phone) {
+		log.info("######## Begin get Customer by Phone ########");
+		
+		Customer customer = customerRepository.findOneByPhone(phone);
+		
+		if (customer == null) {
+			log.error("Customer with Phone: [" + phone + "] not exist");
+			return null;
+		}
+
+		CustomerDTO customerDTO = ObjectMapperUtils.map(customer, CustomerDTO.class);
+		
+		log.info("######## End get Customer by Phone ########");
+		return customerDTO;
 	}
 }

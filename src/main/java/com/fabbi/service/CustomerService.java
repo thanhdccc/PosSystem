@@ -9,7 +9,7 @@ public interface CustomerService {
 
 	Boolean add(CustomerDTO customer);
 	
-	Boolean addCustomerFromOrder(OrderCustomerDTO customer);
+	CustomerDTO addCustomerFromOrder(OrderCustomerDTO customer);
 	
 	Boolean update(CustomerDTO customer);
 	
@@ -34,4 +34,6 @@ public interface CustomerService {
 	Integer count();
 	
 	Integer countByKeyword(String keyword);
+	
+	CustomerDTO getByPhone(String phone);
 }

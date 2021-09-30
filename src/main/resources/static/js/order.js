@@ -35,7 +35,7 @@
 					data: { name : name, email : email, gender : gender, phone : phone, address : address },
 					dataTye: "text",
 					success: function (msg) {
-						if (msg == "Error") {
+						if (msg == "Success") {
 							alert("Customer saved successfull.");
                             location.reload();
 						} else {
