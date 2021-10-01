@@ -54,14 +54,14 @@
 					<div class="form-row py-1">
 						<label for="unit" class="form-label">Supplier</label>
 						<select class="form-control" th:field="*{supplierId}">
-						    <option th:each="supplier : ${supplierList}"
+						    <option th:each="supplier : ${session.editProductSupp}"
 						    	th:value="${supplier.id}" th:text="${supplier.name}" th:selected="${supplier.id == supplierId}" />
 						</select>
 					</div>
 					<div class="form-row py-1">
 						<label for="unit" class="form-label">Category</label>
 						<select class="form-control" th:field="*{categoryId}">
-						    <option th:each="category : ${categoryList}"
+						    <option th:each="category : ${session.editProductCate}"
 						    	th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == categoryId}" />
 						</select>
 					</div>

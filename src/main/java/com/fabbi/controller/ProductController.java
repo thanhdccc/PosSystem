@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,14 +138,17 @@ public class ProductController {
 	}
 	
 	@GetMapping("/products/edit-product/{id}")
-	public String getEditForm(@PathVariable("id") Integer id, Model model) {
+	public String getEditForm(@PathVariable("id") Integer id, Model model, HttpSession session) {
 		ProductDTO productDTO = productService.getById(id);
 		List<CategoryDTO> categoryList = categoryService.findAll();
 		List<SupplierDTO> supplierList = supplierService.findAll();
 		
+		session.setAttribute(Constant.SESSION_EDIT_PRODUCT_CATE, categoryList);
+		session.setAttribute(Constant.SESSION_EDIT_PRODUCT_SUPP, supplierList);
+		
 		model.addAttribute("productDTO", productDTO);
-		model.addAttribute("categoryList", categoryList);
-		model.addAttribute("supplierList", supplierList);
+//		model.addAttribute("categoryList", categoryList);
+//		model.addAttribute("supplierList", supplierList);
 		
 		return "edit-product";
 	}

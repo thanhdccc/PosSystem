@@ -34,6 +34,8 @@ public final class Constant {
 	public static final String SESSION_ORDER_INFOR = "orderInforSession";
 	public static final String SESSION_ORDER_TOTAL_AMOUNT = "orderTotalAmountSession";
 	public static final String SESSION_CUSTOMER_INFOR = "customerInforSession";
+	public static final String SESSION_EDIT_PRODUCT_CATE = "editProductCate";
+	public static final String SESSION_EDIT_PRODUCT_SUPP = "editProductSupp";
 	
 	public static final int ORDER_FORM_CREATE = 0;
 	public static final int ORDER_FORM_EDIT = 1;

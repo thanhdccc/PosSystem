@@ -1,4 +1,14 @@
-﻿function validateCreateCustomer() {
+﻿function setData(jsonData) {
+	var customerObj = JSON.parse(jsonData);
+	
+	document.getElementById("customer_name").value = customerObj.name;
+	document.getElementById("customer_email").value = customerObj.email;
+	document.getElementById("customer_gender").value = customerObj.gender;
+	document.getElementById("customer_phone").value = customerObj.phone;
+	document.getElementById("customer_address").value = customerObj.address;
+}
+
+function validateCreateCustomer() {
 	var name = document.getElementById("customer_name").value;
 	var email = document.getElementById("customer_email").value;
 	var gender = document.getElementById("customer_gender").value;
@@ -26,6 +36,16 @@
 		dataTye: "text",
 		success: function (msg) {
 			if (msg == "Error") {
+				var jsonData = $.ajax({
+					type: "GET",
+					url: "/api/customer/get-customer",
+					data: { phone : phone},
+					dataType: "json",
+					async: false
+				}).responseText;
+				
+				setData(jsonData);
+				
 		        alert("Customer with phone already in use.");
 		        return;
 			} else {

@@ -72,7 +72,9 @@
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="VN-Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
