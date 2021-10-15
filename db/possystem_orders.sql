@@ -1,0 +1,58 @@
+-- MySQL dump 10.13  Distrib 8.0.26, for Win64 (x86_64)
+--
+-- Host: localhost    Database: possystem
+-- ------------------------------------------------------
+-- Server version	8.0.26
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_by` varchar(255) DEFAULT NULL,
+  `created_date` datetime DEFAULT NULL,
+  `modified_by` varchar(255) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `amount` int DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ORDER_CUS_FK` (`customer_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (8,'admin','2021-09-27 13:59:10','admin','2021-09-29 15:20:37',59000,2,0),(4,'admin','2021-09-24 10:04:11','admin','2021-09-27 13:16:19',48000,NULL,1),(5,'admin','2021-09-24 10:11:19','admin','2021-09-29 15:16:57',114000,NULL,0),(6,'user123456','2021-09-24 13:48:35','user123456','2021-09-24 13:48:35',26000,NULL,0),(7,'admin','2021-09-24 13:48:35','admin','2021-09-27 13:57:17',42000,NULL,0),(9,'admin','2021-09-29 14:20:40','admin','2021-09-29 14:20:40',38000,4,0),(10,'admin','2021-09-29 15:39:52','admin','2021-09-29 15:39:52',55000,NULL,0),(11,'admin','2021-09-30 08:47:49','admin','2021-09-30 08:47:49',27000,NULL,0),(12,'admin','2021-09-30 08:49:08','admin','2021-09-30 08:50:27',39000,2,0),(13,'admin','2021-09-30 13:32:05','admin','2021-09-30 13:32:05',33000,5,0),(14,'admin','2021-09-30 13:32:58','admin','2021-09-30 13:32:58',44000,NULL,0),(15,'admin','2021-09-30 15:42:42','admin','2021-09-30 15:42:42',21000,2,0),(16,'admin','2021-10-01 12:10:51','admin','2021-10-01 12:10:51',20000,NULL,0);
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-10-05 17:27:36
